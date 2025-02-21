@@ -15,6 +15,49 @@ stars.set('Procyon', { ra: 114.82531, dec: 5.22499, mag: 0.38, type: 'F5IV-V' })
 stars.set('Betelgeuse', { ra: 88.79294, dec: 7.40706, mag: 0.50, type: 'M1-2Ia-Iab' });
 stars.set('Achernar', { ra: 335.55521, dec: -57.23676, mag: 0.50, type: 'B3Vpe' });
 stars.set('Hadar', { ra: 148.88764, dec: -60.37313, mag: 0.61, type: 'B1IV' });
+stars.set('Altair', { ra: 297.69583, dec: 8.86832, mag: 0.77, type: 'A7V' });
+stars.set('Acrux', { ra: 173.44643, dec: -63.09909, mag: 0.76, type: 'B0.5IV' });
+stars.set('Aldebaran', { ra: 68.98016, dec: 16.50930, mag: 0.85, type: 'K5III' });
+stars.set('Antares', { ra: 247.35190, dec: -26.43200, mag: 0.96, type: 'M1.5Iab-IbB' });
+stars.set('Spica', { ra: 201.29831, dec: -11.16133, mag: 0.98, type: 'B1V' });
+stars.set('Pollux', { ra: 116.32894, dec: 28.02618, mag: 1.14, type: 'K0III' });
+stars.set('Fomalhaut', { ra: 344.41269, dec: -29.62224, mag: 1.16, type: 'A3V' });
+stars.set('Deneb', { ra: 310.35796, dec: 45.28034, mag: 1.25, type: 'A2Ia' });
+stars.set('Mimosa', { ra: 162.50177, dec: -59.69284, mag: 1.25, type: 'B0.5III' });
+stars.set('Regulus', { ra: 152.09296, dec: 11.96721, mag: 1.35, type: 'B7V' });
+stars.set('Adhara', { ra: 104.65648, dec: -28.97217, mag: 1.50, type: 'B2II' });
+stars.set('Castor', { ra: 113.65093, dec: 31.88831, mag: 1.58, type: 'A1V' });
+stars.set('Gacrux', { ra: 171.80992, dec: -57.10413, mag: 1.59, type: 'M3.5III' });
+stars.set('Bellatrix', { ra: 81.28274, dec: 6.34969, mag: 1.64, type: 'B2III' });
+stars.set('Elnath', { ra: 85.19141, dec: 28.61222, mag: 1.65, type: 'B7III' });
+stars.set('Miaplacidus', { ra: 139.67374, dec: -69.71665, mag: 1.67, type: 'A2IV' });
+stars.set('Alnilam', { ra: 84.05336, dec: -1.20192, mag: 1.69, type: 'B0Ia' });
+stars.set('Alnitak', { ra: 82.09628, dec: -1.94270, mag: 1.74, type: 'O9.5Ib' });
+stars.set('Regor', { ra: 137.24510, dec: -64.83426, mag: 1.78, type: 'B0.5IV' });
+stars.set('Alioth', { ra: 194.45971, dec: 55.95982, mag: 1.76, type: 'A0pCr' });
+stars.set('Mirfak', { ra: 51.08132, dec: 49.86118, mag: 1.79, type: 'F5Ib-II' });
+stars.set('Dubhe', { ra: 165.93179, dec: 61.75111, mag: 1.81, type: 'K0III' });
+stars.set('Wezen', { ra: 107.01747, dec: -26.43191, mag: 1.83, type: 'F8Ia' });
+stars.set('Kaus Australis', { ra: 276.13982, dec: -34.38888, mag: 1.85, type: 'B9.5III' });
+stars.set('Polaris', { ra: 37.95466, dec: 89.26411, mag: 1.97, type: 'F7Ib-IIv' });
+stars.set('Alphard', { ra: 141.76711, dec: -8.65889, mag: 1.98, type: 'K3II-III' });
+stars.set('Hamal', { ra: 32.86995, dec: 23.46227, mag: 2.01, type: 'K2III' });
+stars.set('Alnath', { ra: 85.19141, dec: 28.61222, mag: 1.65, type: 'B7III' });
+stars.set('Alniyat', { ra: 274.77676, dec: -17.82331, mag: 1.69, type: 'B1III' });
+stars.set('Alnair', { ra: 309.15355, dec: -46.96087, mag: 1.73, type: 'B7IV' });
+stars.set('Fomalhaut', { ra: 344.41269, dec: -29.62224, mag: 1.16, type: 'A3V' });
+stars.set('Menkalinan', { ra: 71.41906, dec: 44.95263, mag: 1.90, type: 'A2V' });
+stars.set('Nunki', ra: 273.96709, dec: -26.39676, mag: 2.05, type: 'B2.5V' });
+stars.set('Peacock', ra: 299.40842, dec: -56.73636, mag: 1.91, type: 'B2IV' });
+stars.set('Mirzam', ra: 99.26392, dec: -22.37330, mag: 1.98, type: 'B1II-III' });
+stars.set('Alphecca', ra: 232.50177, dec: 26.71442, mag: 2.22, type: 'A0V' });
+stars.set('Ankaa', ra: 353.21962, dec: -42.30543, mag: 2.39, type: 'K0III' });
+stars.set('Schedar', ra: 34.96366, dec: 56.53775, mag: 2.24, type: 'K0III' });
+stars.set('Kaus Borealis', ra: 271.86318, dec: -27.52940, mag: 2.80, type: 'K2III' });
+stars.set('Diphda', ra: 14.02531, dec: -17.98603, mag: 2.04, type: 'K0III' });
+stars.set('Mizar', ra: 194.56091, dec: 54.99035, mag: 2.04, type: 'A1V' });
+stars.set('Alcor', ra: 194.65433, dec: 54.99418, mag: 3.99, type: 'A5V' });
+
 //... thousands more stars...
 
 // Constellation data (expanded)
