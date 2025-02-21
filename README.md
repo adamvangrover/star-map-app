@@ -1,4 +1,3 @@
-# star-map-app
 # Interactive Constellation Viewer
 
 This web application allows you to explore the night sky, discover constellations, and learn about their fascinating mythology.
@@ -11,6 +10,8 @@ This web application allows you to explore the night sky, discover constellation
 *   Click on a constellation to display its information and mythology.
 *   Search for constellations by name.
 *   Accessible design for users with disabilities.
+*   Thousands of stars and celestial objects, including galaxies, nebulae, and star clusters.
+*   Enhanced star visibility and animation for a more captivating experience.
 
 ## Usage
 
