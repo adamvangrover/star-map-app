@@ -8,41 +8,41 @@ const stars = new Map();
 stars.set('Sirius', { ra: 101.2875, dec: -16.71611, mag: -1.46, type: 'A1V' });
 stars.set('Canopus', { ra: 95.98833, dec: -52.69528, mag: -0.72, type: 'F0Ib' });
 stars.set('Arcturus', { ra: 213.91528, dec: 19.18241, mag: -0.04, type: 'K1.5III' });
-stars.set('Vega', ra: 279.23473, dec: 38.78369, mag: 0.03, type: 'A0V' });
-stars.set('Capella', ra: 79.17236, dec: 45.99798, mag: 0.08, type: 'G8III' });
-stars.set('Rigel', ra: 78.63446, dec: -8.20164, mag: 0.12, type: 'B8Ia' });
-stars.set('Procyon', ra: 114.82531, dec: 5.22499, mag: 0.38, type: 'F5IV-V' });
-stars.set('Betelgeuse', ra: 88.79294, dec: 7.40706, mag: 0.50, type: 'M1-2Ia-Iab' });
-stars.set('Achernar', ra: 335.55521, dec: -57.23676, mag: 0.50, type: 'B3Vpe' });
-stars.set('Hadar', ra: 148.88764, dec: -60.37313, mag: 0.61, type: 'B1IV' });
+stars.set('Vega', { ra: 279.23473, dec: 38.78369, mag: 0.03, type: 'A0V' });
+stars.set('Capella', { ra: 79.17236, dec: 45.99798, mag: 0.08, type: 'G8III' });
+stars.set('Rigel', { ra: 78.63446, dec: -8.20164, mag: 0.12, type: 'B8Ia' });
+stars.set('Procyon', { ra: 114.82531, dec: 5.22499, mag: 0.38, type: 'F5IV-V' });
+stars.set('Betelgeuse', { ra: 88.79294, dec: 7.40706, mag: 0.50, type: 'M1-2Ia-Iab' });
+stars.set('Achernar', { ra: 335.55521, dec: -57.23676, mag: 0.50, type: 'B3Vpe' });
+stars.set('Hadar', { ra: 148.88764, dec: -60.37313, mag: 0.61, type: 'B1IV' });
 //... thousands more stars...
 
 // Constellation data (expanded)
 const constellations = [
-  {
-    name: 'Ursa Major',
-    stars: ['Dubhe', 'Merak', 'Phecda', 'Megrez', 'Alioth', 'Mizar', 'Alkaid'],
-    mythology: 'The Great Bear, associated with Artemis in Greek mythology.',
-    lines: [
-      { from: 'Dubhe', to: 'Merak' },
-      { from: 'Merak', to: 'Phecda' },
-      { from: 'Phecda', to: 'Megrez' },
-      { from: 'Megrez', to: 'Alioth' },
-      { from: 'Alioth', to: 'Mizar' },
-      { from: 'Mizar', to: 'Alkaid' }
-    ]
-  },
-  {
-    name: 'Ursa Minor',
-    stars: ['Polaris', 'Kochab', 'Pherkad', 'Yildun', 'Urodelus', 'Alifa al Farkadain'],
-    mythology: 'The Little Bear, said to represent Arcas, son of Callisto.',
-    lines: [
-      { from: 'Polaris', to: 'Kochab' },
-      { from: 'Kochab', to: 'Pherkad' },
-      //... lines connecting stars...
-    ]
-  },
-  //... dozens of constellations...
+    {
+        name: 'Ursa Major',
+        stars: ['Dubhe', 'Merak', 'Phecda', 'Megrez', 'Alioth', 'Mizar', 'Alkaid'],
+        mythology: 'The Great Bear, associated with Artemis in Greek mythology.',
+        lines: [
+            { from: 'Dubhe', to: 'Merak' },
+            { from: 'Merak', to: 'Phecda' },
+            { from: 'Phecda', to: 'Megrez' },
+            { from: 'Megrez', to: 'Alioth' },
+            { from: 'Alioth', to: 'Mizar' },
+            { from: 'Mizar', to: 'Alkaid' }
+        ]
+    },
+    {
+        name: 'Ursa Minor',
+        stars: ['Polaris', 'Kochab', 'Pherkad', 'Yildun', 'Urodelus', 'Alifa al Farkadain'],
+        mythology: 'The Little Bear, said to represent Arcas, son of Callisto.',
+        lines: [
+            { from: 'Polaris', to: 'Kochab' },
+            { from: 'Kochab', to: 'Pherkad' },
+            //... lines connecting stars...
+        ]
+    },
+    //... dozens of constellations...
 ];
 
 // Canvas and context
@@ -56,12 +56,11 @@ const ctx = canvas.getContext('2d');
 function drawStars() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    for (let i = 0; i < stars.length; i++) {
-        const star = stars[i];
+    // Iterate over the stars Map using for...of loop
+    for (const [starName, star] of stars) {
         const x = (star.ra / 24) * starMap.offsetWidth;
         const y = starMap.offsetHeight - (star.dec + 90) / 180 * starMap.offsetHeight;
 
-        // Enhanced animation with subtle twinkling
         const animationOffset = Math.sin(Date.now() / 1000 + star.ra * Math.PI / 180) * 2;
         const xAnimated = x + animationOffset;
         const yAnimated = y + animationOffset;
@@ -79,8 +78,8 @@ function drawStars() {
 function drawConstellationLines(constellation) {
     ctx.beginPath();
     constellation.lines.forEach(line => {
-        const star1 = stars.find(star => star.name === line.from);
-        const star2 = stars.find(star => star.name === line.to);
+        const star1 = stars.get(line.from); // Use get() to retrieve from Map
+        const star2 = stars.get(line.to); // Use get() to retrieve from Map
         if (star1 && star2) {
             const x1 = (star1.ra / 24) * starMap.offsetWidth;
             const y1 = starMap.offsetHeight - (star1.dec + 90) / 180 * starMap.offsetHeight;
@@ -90,7 +89,7 @@ function drawConstellationLines(constellation) {
             ctx.lineTo(x2, y2);
         }
     });
-    ctx.strokeStyle = '#ccc'; // Light gray color for constellation lines
+    ctx.strokeStyle = '#ccc';
     ctx.lineWidth = 1;
     ctx.stroke();
 }
@@ -103,7 +102,7 @@ canvas.addEventListener('click', (e) => {
 
     constellations.forEach(constellation => {
         const starPoints = constellation.stars.map(starName => {
-            const star = stars.find(star => star.name === starName);
+            const star = stars.get(starName); // Use get() to retrieve from Map
             const x = (star.ra / 24) * starMap.offsetWidth;
             const y = starMap.offsetHeight - (star.dec + 90) / 180 * starMap.offsetHeight;
             return { x: x, y: y };
