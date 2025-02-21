@@ -61,7 +61,8 @@ function drawStars() {
         const x = (star.ra / 24) * starMap.offsetWidth;
         const y = starMap.offsetHeight - (star.dec + 90) / 180 * starMap.offsetHeight;
 
-        const animationOffset = Math.sin(Date.now() / 1000 + star.ra) * 5;
+        // Enhanced animation with subtle twinkling
+        const animationOffset = Math.sin(Date.now() / 1000 + star.ra * Math.PI / 180) * 2;
         const xAnimated = x + animationOffset;
         const yAnimated = y + animationOffset;
 
