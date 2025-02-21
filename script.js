@@ -2,19 +2,20 @@ const starMap = document.getElementById('star-map');
 const constellationInfo = document.getElementById('constellation-info');
 
 // Star data (vastly expanded and optimized - thousands of stars)
-const stars = [
-    { name: 'Sirius', ra: 101.2875, dec: -16.71611, mag: -1.46, type: 'A1V' },
-    { name: 'Canopus', ra: 95.98833, dec: -52.69528, mag: -0.72, type: 'F0Ib' },
-    { name: 'Arcturus', ra: 213.91528, dec: 19.18241, mag: -0.04, type: 'K1.5III' },
-    { name: 'Vega', ra: 279.23473, dec: 38.78369, mag: 0.03, type: 'A0V' },
-    { name: 'Capella', ra: 79.17236, dec: 45.99798, mag: 0.08, type: 'G8III' },
-    { name: 'Rigel', ra: 78.63446, dec: -8.20164, mag: 0.12, type: 'B8Ia' },
-    { name: 'Procyon', ra: 114.82531, dec: 5.22499, mag: 0.38, type: 'F5IV-V' },
-    { name: 'Betelgeuse', ra: 88.79294, dec: 7.40706, mag: 0.50, type: 'M1-2Ia-Iab' },
-    { name: 'Achernar', ra: 335.55521, dec: -57.23676, mag: 0.50, type: 'B3Vpe' },
-    { name: 'Hadar', ra: 148.88764, dec: -60.37313, mag: 0.61, type: 'B1IV' },
-    //... thousands more stars...
-];
+const stars = new Map();
+
+// Add stars (truncated for brevity - include full dataset here)
+stars.set('Sirius', { ra: 101.2875, dec: -16.71611, mag: -1.46, type: 'A1V' });
+stars.set('Canopus', { ra: 95.98833, dec: -52.69528, mag: -0.72, type: 'F0Ib' });
+stars.set('Arcturus', { ra: 213.91528, dec: 19.18241, mag: -0.04, type: 'K1.5III' });
+stars.set('Vega', { ra: 279.23473, dec: 38.78369, mag: 0.03, type: 'A0V' });
+stars.set('Capella', { ra: 79.17236, dec: 45.99798, mag: 0.08, type: 'G8III' });
+stars.set('Rigel', { ra: 78.63446, dec: -8.20164, mag: 0.12, type: 'B8Ia' });
+stars.set('Procyon', { ra: 114.82531, dec: 5.22499, mag: 0.38, type: 'F5IV-V' });
+stars.set('Betelgeuse', { ra: 88.79294, dec: 7.40706, mag: 0.50, type: 'M1-2Ia-Iab' });
+stars.set('Achernar', { ra: 335.55521, dec: -57.23676, mag: 0.50, type: 'B3Vpe' });
+stars.set('Hadar', { ra: 148.88764, dec: -60.37313, mag: 0.61, type: 'B1IV' });
+//... thousands more stars...
 
 // Constellation data (expanded)
 const constellations = [
@@ -51,27 +52,35 @@ canvas.height = starMap.offsetHeight;
 starMap.appendChild(canvas);
 const ctx = canvas.getContext('2d');
 
-// Function to draw stars on the canvas (simplified - no animation)
+// Function to draw stars on the canvas (animated)
 function drawStars() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    stars.forEach(star => {
+    // Iterate over the stars Map using for...of loop
+    for (const [starName, star] of stars) {
         const x = (star.ra / 24) * starMap.offsetWidth;
         const y = starMap.offsetHeight - (star.dec + 90) / 180 * starMap.offsetHeight;
 
+        // Calculate star position with animation offset
+        const animationOffset = Math.sin(Date.now() / 1000 + star.ra) * 5; // Example animation
+        const xAnimated = x + animationOffset;
+        const yAnimated = y + animationOffset;
+
         ctx.beginPath();
-        ctx.arc(x, y, (2 - star.mag) * 2, 0, 2 * Math.PI);
+        ctx.arc(xAnimated, yAnimated, (2 - star.mag) * 2, 0, 2 * Math.PI);
         ctx.fillStyle = '#FFFF00'; // Brighter star color
         ctx.fill();
-    });
+    }
+
+    requestAnimationFrame(drawStars);
 }
 
 // Function to draw constellation lines (on canvas)
 function drawConstellationLines(constellation) {
     ctx.beginPath();
     constellation.lines.forEach(line => {
-        const star1 = stars.find(star => star.name === line.from);
-        const star2 = stars.find(star => star.name === line.to);
+        const star1 = stars.get(line.from); // Use get() to retrieve from Map
+        const star2 = stars.get(line.to); // Use get() to retrieve from Map
         if (star1 && star2) {
             const x1 = (star1.ra / 24) * starMap.offsetWidth;
             const y1 = starMap.offsetHeight - (star1.dec + 90) / 180 * starMap.offsetHeight;
@@ -86,7 +95,7 @@ function drawConstellationLines(constellation) {
     ctx.stroke();
 }
 
-// Event listeners for constellation clicks (simplified - no animation)
+// Event listeners for constellation clicks
 canvas.addEventListener('click', (e) => {
     const rect = canvas.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
@@ -94,7 +103,7 @@ canvas.addEventListener('click', (e) => {
 
     constellations.forEach(constellation => {
         const starPoints = constellation.stars.map(starName => {
-            const star = stars.find(star => star.name === starName);
+            const star = stars.get(starName); // Use get() to retrieve from Map
             const x = (star.ra / 24) * starMap.offsetWidth;
             const y = starMap.offsetHeight - (star.dec + 90) / 180 * starMap.offsetHeight;
             return { x: x, y: y };
@@ -123,6 +132,88 @@ function hideConstellationInfo() {
     constellationInfo.style.display = 'none';
 }
 
-// Initial drawing of stars and constellations (no animation)
+// Zoom controls
+const zoomInButton = document.createElement('button');
+zoomInButton.textContent = '+';
+zoomInButton.addEventListener('click', () => {
+    scale += 0.1;
+    scale = Math.min(scale, 2);
+    canvas.style.transition = 'transform 0.3s ease';
+    updateTransform();
+});
+starMap.appendChild(zoomInButton);
+
+const zoomOutButton = document.createElement('button');
+zoomOutButton.textContent = '-';
+zoomOutButton.addEventListener('click', () => {
+    scale -= 0.1;
+    scale = Math.max(scale, 0.5);
+    canvas.style.transition = 'transform 0.3s ease';
+    updateTransform();
+});
+starMap.appendChild(zoomOutButton);
+
+let isDragging = false;
+let startX, startY;
+let translateX = 0, translateY = 0;
+let scale = 1;
+
+starMap.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    startX = e.clientX - translateX;
+    startY = e.clientY - translateY;
+});
+
+starMap.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    translateX = e.clientX - startX;
+    translateY = e.clientY - startY;
+    updateTransform();
+});
+
+starMap.addEventListener('mouseup', () => {
+    isDragging = false;
+});
+
+starMap.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const delta = Math.sign(e.deltaY);
+    scale += delta * 0.1;
+    scale = Math.min(Math.max(scale, 0.5), 2);
+    updateTransform();
+});
+
+// Helper function to update canvas transform
+function updateTransform() {
+    canvas.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+}
+
+// Search functionality
+const searchInput = document.createElement('input');
+searchInput.type = 'text';
+searchInput.placeholder = 'Search for a constellation...';
+searchInput.addEventListener('input', () => {
+    const searchTerm = searchInput.value.toLowerCase();
+    constellations.forEach(constellation => {
+        if (constellation.name.toLowerCase().includes(searchTerm)) {
+            //... (add a class to the constellation's stars to highlight them)...
+        } else {
+            //... (remove the highlighting class)...
+        }
+    });
+});
+starMap.appendChild(searchInput);
+
+// Accessibility
+constellationInfo.setAttribute('aria-label', 'Constellation Information');
+constellationInfo.setAttribute('role', 'dialog');
+
+zoomInButton.setAttribute('aria-label', 'Zoom In');
+zoomInButton.setAttribute('role', 'button');
+
+zoomOutButton.setAttribute('aria-label', 'Zoom Out');
+zoomOutButton.setAttribute('role', 'button');
+
+// Initial drawing of stars and constellations (animated)
 drawStars();
 constellations.forEach(drawConstellationLines);
