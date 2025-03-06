@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Constellation Viewer</title>
     <link rel="stylesheet" href="style.css">
-
+<style>
 #star-map {
     width: 100%;
     height: 600px;
@@ -33,7 +33,7 @@
     z-index: 10;
     pointer-events: none;
 }
-
+</style>
     
 </head>
 <body>
@@ -43,7 +43,7 @@
         <p>Mythology and Information</p>
     </div>
     <script src="script.js"></script>
-
+<script>
 const starMap = document.getElementById('star-map');
 const constellationInfo = document.getElementById('constellation-info');
 
@@ -318,7 +318,7 @@ constellationInfo.setAttribute('role', 'dialog');
 drawStars();
 constellations.forEach(drawConstellationLines);
 
-
+</script>
     
 </body>
 </html>
