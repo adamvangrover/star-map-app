@@ -1,27 +1,151 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #050510; /* Darker space blue, fallback if no gradient */
+    background-image: radial-gradient(ellipse at bottom, #0d101f 0%, #03030a 100%);
+    color: #fff;
+    display: flex; /* Helps in centering star-map if needed, or managing page layout */
+    flex-direction: column;
+    align-items: center; /* Center content like the star map container */
+    min-height: 100vh;
+}
+
 #star-map {
     width: 100%;
-    height: 600px;
-    background-color: #000;
+    max-width: 1200px; /* Max width for very large screens */
+    height: 600px; /* Existing height */
+    /* background-color: #000; -- This will be covered by canvas */
     overflow: hidden;
     cursor: grab;
-}.star {
-    position: absolute;
-    background-color: #fff;
-    border-radius: 50%;
-    /* Increased star size and brightness */
-    width: 3px;
-    height: 3px;
-    box-shadow: 0 0 10px #fff; /* Add a subtle glow */
+    position: relative; /* For positioning child elements like search/buttons if needed */
+    border: 1px solid #2a2a40; /* Subtle border for the map area */
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.2); /* Faint green nebula-like glow */
 }
+
+/* Styling for dynamically added search input and buttons */
+/* These elements are direct children of #star-map in the current JS */
+#star-map input[type="text"] {
+    position: absolute;
+    top: 10px;
+    left: 10px; /* Changed to left for better layout with info box on right */
+    background-color: rgba(10, 10, 20, 0.8);
+    color: #e0e0e0;
+    border: 1px solid #303050;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 14px;
+    z-index: 20; /* Ensure it's above canvas */
+    width: 250px; /* Fixed width, adjust as needed */
+}
+
+#star-map input[type="text"]::placeholder {
+    color: #8080a0;
+}
+
+/* General styling for buttons inside #star-map */
+#star-map button {
+    background-color: rgba(30, 30, 50, 0.7);
+    color: #d0d0d0;
+    border: 1px solid #404060;
+    padding: 5px 10px;
+    margin: 2px; /* Reduced margin for tighter packing if needed */
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s, color 0.3s;
+    z-index: 20; /* Ensure they are above canvas */
+}
+
+#star-map button:hover {
+    background-color: rgba(50, 50, 80, 0.9);
+    color: #fff;
+}
+
+/* Specific positioning for pan buttons would ideally require them to be in a container.
+   If they are absolutely positioned, their locations would need to be set in JS.
+   The following are placeholders if they are simply flowed into a specific corner.
+   For instance, if a "controls" div existed:
+   .controls { position: absolute; top: 50px; left: 10px; z-index: 20; display: flex; flex-direction: column; }
+*/
+
 
 #constellation-info {
     position: fixed;
-    top: 20px;
-    left: 20px;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #fff;
-    padding: 10px;
-    border-radius: 5px;
-    z-index: 10;
-    pointer-events: none;
+    top: 10px;
+    right: 10px;
+    width: 280px;
+    max-width: 90%;
+    background-color: rgba(10, 10, 25, 0.85);
+    color: #e0e0e0;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #2a2a40;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    z-index: 30;
+    pointer-events: auto; /* Allow interaction */
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+#constellation-info h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.5em;
+    color: #90caf9;
+    border-bottom: 1px solid #303050;
+    padding-bottom: 8px;
+}
+
+#constellation-info p {
+    margin-bottom: 0;
+}
+
+/*
+   Star Styling (size, color, glow, twinkling) is primarily handled
+   within the drawStars() function in script.js as they are drawn on canvas.
+   The .star class from the original CSS is not used by the canvas rendering.
+
+   Constellation Line Styling (color, thickness, glow for highlighted)
+   is also handled within the drawConstellationLines() function in script.js.
+*/
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) { /* Adjusted breakpoint */
+    #constellation-info {
+        font-size: 13px;
+        padding: 10px;
+    }
+    #star-map input[type="text"] {
+        width: 200px; /* Adjust width for smaller screens */
+        font-size: 13px;
+    }
+    #star-map button {
+        font-size: 14px;
+        padding: 4px 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    #star-map {
+        height: 400px; /* Reduce map height on very small screens */
+    }
+    #constellation-info {
+        top: 5px;
+        right: 5px;
+        left: 5px;
+        width: auto;
+        max-width: calc(100% - 10px);
+        font-size: 12px;
+        line-height: 1.4;
+    }
+
+    #star-map input[type="text"] {
+        width: calc(100% - 20px); /* Full width search bar */
+        left: 10px;
+        top: 5px; /* Adjust top to prevent overlap with potential buttons */
+        box-sizing: border-box;
+        font-size: 12px;
+    }
+    /* Pan buttons may become too cluttered; consider JS for dynamic layout or hiding on smallest screens */
 }
