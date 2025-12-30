@@ -1,225 +1,141 @@
-const starMap = document.getElementById('star-map');
-const constellationInfo = document.getElementById('constellation-info');
+// --- Data Definitions ---
 
-// Star data (vastly expanded and optimized - thousands of stars)
 const stars = new Map();
 
-// Add stars from IAU-CSN.json (partial list)
-stars.set('Acamar', { ra: 44.565311, dec: -40.304672, mag: 2.88 });
-stars.set('Achernar', { ra: 24.428523, dec: -57.236753, mag: 0.45 });
-stars.set('Achird', { ra: 12.276213, dec: 57.815187, mag: 3.46 });
-stars.set('Acrab', { ra: 241.359300, dec: -19.805453, mag: 2.56 });
-stars.set('Acrux', { ra: 186.649563, dec: -63.099093, mag: 1.33 });
-stars.set('Acubens', { ra: 134.621761, dec: 11.857700, mag: 4.26 });
-stars.set('Adhafera', { ra: 154.172567, dec: 23.417312, mag: 3.43 });
-stars.set('Adhara', { ra: 104.656453, dec: -28.972086, mag: 1.50 });
-stars.set('Adhil', { ra: 20.585080, dec: 45.528778, mag: 4.87 });
-stars.set('Ain', { ra: 67.154163, dec: 19.180435, mag: 3.53 });
-stars.set('Ainalrami', { ra: 283.542404, dec: -22.744840, mag: 4.86 });
-stars.set('Aladfar', { ra: 288.439531, dec: 39.145970, mag: 4.43 });
-stars.set('Alasia', { ra: 275.457428, dec: -11.922682, mag: 7.95 });
-stars.set('Albaldah', { ra: 287.440971, dec: -21.023615, mag: 2.88 });
-stars.set('Albali', { ra: 311.918969, dec: -9.495775, mag: 3.78 });
-stars.set('Albireo', { ra: 292.680351, dec: 27.959692, mag: 3.37 });
-stars.set('Alchiba', { ra: 182.103402, dec: -24.728875, mag: 4.02 });
-stars.set('Alcor', { ra: 201.306403, dec: 54.987954, mag: 3.99 });
-stars.set('Alcyone', { ra: 56.871152, dec: 24.105136, mag: 2.85 });
-stars.set('Aldebaran', { ra: 68.980163, dec: 16.509302, mag: 0.87 });
-stars.set('Alderamin', { ra: 319.644885, dec: 62.585574, mag: 2.45 });
-stars.set('Aldhanab', { ra: 328.482192, dec: -37.364855, mag: 3.00 });
-stars.set('Aldhibah', { ra: 257.196650, dec: 65.714684, mag: 3.17 });
-stars.set('Aldulfin', { ra: 308.303216, dec: 11.303261, mag: 4.03 });
-stars.set('Alfirk', { ra: 322.164987, dec: 70.560715, mag: 3.23 });
-stars.set('Algedi', { ra: 304.513566, dec: -12.544852, mag: 3.58 });
-stars.set('Algenib', { ra: 3.308963, dec: 15.183594, mag: 2.83 });
-stars.set('Algieba', { ra: 154.993144, dec: 19.841489, mag: 2.61 });
-stars.set('Algol', { ra: 47.042215, dec: 40.955648, mag: 2.09 });
-stars.set('Algorab', { ra: 187.466063, dec: -16.515431, mag: 2.94 });
-stars.set('Alhena', { ra: 99.427960, dec: 16.399280, mag: 1.93 });
-stars.set('Alioth', { ra: 193.507290, dec: 55.959823, mag: 1.76 });
-stars.set('Aljanah', { ra: 311.552843, dec: 33.970257, mag: 2.48 });
-stars.set('Alkaid', { ra: 206.885157, dec: 49.313267, mag: 1.85 });
-stars.set('Alkalurops', { ra: 231.122618, dec: 37.377169, mag: 4.31 });
-stars.set('Almaaz', { ra: 75.492219, dec: 43.823307, mag: 3.03 });
-stars.set('Almach', { ra: 30.974804, dec: 42.329725, mag: 2.10 });
-stars.set('Alnair', { ra: 332.058270, dec: -46.960974, mag: 1.73 });
-stars.set('Alnasl', { ra: 271.452025, dec: -30.424100, mag: 2.98 });
-stars.set('Alnilam', { ra: 84.053389, dec: -1.201919, mag: 1.69 });
-stars.set('Alnitak', { ra: 85.189694, dec: -1.942574, mag: 1.74 });
-stars.set('Alniyat', { ra: 245.297149, dec: -25.592792, mag: 2.90 }); // Original had sigma Sco, Alniyat is HR 6084
-stars.set('Alphard', { ra: 141.896847, dec: -8.658602, mag: 1.99 });
-stars.set('Alphecca', { ra: 233.671950, dec: 26.714693, mag: 2.22 });
-stars.set('Alpheratz', { ra: 2.096916, dec: 29.090431, mag: 2.07 });
-stars.set('Alpherg', { ra: 22.870873, dec: 15.345823, mag: 3.83 });
-stars.set('Alrakis', { ra: 256.333807, dec: 54.470078, mag: 5.55 });
-stars.set('Alrescha', { ra: 30.511772, dec: 2.763735, mag: 3.82 });
-stars.set('Alsafi', { ra: 293.089960, dec: 69.661176, mag: 4.67 });
-stars.set('Alsciaukat', { ra: 125.708792, dec: 43.188131, mag: 4.25 });
-stars.set('Alshain', { ra: 298.828304, dec: 6.406763, mag: 3.71 });
-stars.set('Altair', { ra: 297.695827, dec: 8.868321, mag: 0.76 });
-stars.set('Alterf', { ra: 142.930115, dec: 22.967970, mag: 4.32 });
-stars.set('Aludra', { ra: 111.023760, dec: -29.303106, mag: 2.45 });
-stars.set('Alya', { ra: 284.054949, dec: 4.203602, mag: 4.62 });
-stars.set('Ankaa', { ra: 6.570939, dec: -42.306084, mag: 2.40 });
-stars.set('Antares', { ra: 247.351915, dec: -26.432003, mag: 1.06 });
-stars.set('Arcturus', { ra: 213.915300, dec: 19.182409, mag: -0.05 });
-stars.set('Ascella', { ra: 285.653043, dec: -29.880063, mag: 2.60 });
-stars.set('Aspidiske', { ra: 139.272529, dec: -59.275232, mag: 2.21 });
-stars.set('Asterope', { ra: 56.476987, dec: 24.554512, mag: 5.76 });
-stars.set('Atik', { ra: 56.079720, dec: 32.288240, mag: 3.84 });
-stars.set('Atlas', { ra: 57.290597, dec: 24.053415, mag: 3.62 });
-stars.set('Atria', { ra: 252.166229, dec: -69.027712, mag: 1.91 });
-stars.set('Avior', { ra: 125.628480, dec: -59.509484, mag: 1.86 });
-stars.set('Azha', { ra: 44.106873, dec: -8.898145, mag: 3.89 });
-stars.set('Beid', { ra: 62.966415, dec: -6.837580, mag: 4.04 });
-stars.set('Bellatrix', { ra: 81.282764, dec: 6.349703, mag: 1.64 });
-stars.set('Betelgeuse', { ra: 88.792939, dec: 7.407064, mag: 0.45 }); // Magnitude can vary
-stars.set('Canopus', { ra: 95.987958, dec: -52.695661, mag: -0.62 });
-stars.set('Capella', { ra: 79.172328, dec: 45.997991, mag: 0.08 });
-stars.set('Caph', { ra: 2.294522, dec: 59.149781, mag: 2.28 });
-stars.set('Castor', { ra: 113.649428, dec: 31.888276, mag: 1.98 }); // Combined magnitude, individual components differ
-stars.set('Cebalrai', { ra: 265.868136, dec: 4.567300, mag: 2.76 });
-stars.set('Celaeno', { ra: 56.200893, dec: 24.289468, mag: 5.45 });
-stars.set('Chara', { ra: 188.435603, dec: 41.357479, mag: 4.24 });
-stars.set('Cor Caroli', { ra: 194.006943, dec: 38.318376, mag: 2.89 });
-stars.set('Cursa', { ra: 76.962440, dec: -5.086446, mag: 2.78 });
-stars.set('Dabih', { ra: 305.252803, dec: -14.781405, mag: 3.05 });
-stars.set('Deneb', { ra: 310.357980, dec: 45.280339, mag: 1.25 });
-stars.set('Deneb Algedi', { ra: 326.760184, dec: -16.127287, mag: 2.85 });
-stars.set('Denebola', { ra: 177.264910, dec: 14.572058, mag: 2.14 });
-stars.set('Diphda', { ra: 10.897379, dec: -17.986606, mag: 2.04 });
-stars.set('Dschubba', { ra: 240.083359, dec: -22.621710, mag: 2.29 });
-stars.set('Dubhe', { ra: 165.931965, dec: 61.751035, mag: 1.81 });
-stars.set('Edasich', { ra: 231.232396, dec: 58.966063, mag: 3.29 });
-stars.set('Electra', { ra: 56.218904, dec: 24.113336, mag: 3.72 });
-stars.set('Elnath', { ra: 81.572971, dec: 28.607452, mag: 1.65 });
-stars.set('Eltanin', { ra: 269.151541, dec: 51.488896, mag: 2.24 });
-stars.set('Enif', { ra: 326.046484, dec: 9.875009, mag: 2.38 });
-stars.set('Errai', { ra: 354.836655, dec: 77.632313, mag: 3.21 });
-stars.set('Fomalhaut', { ra: 344.412693, dec: -29.622237, mag: 1.17 });
-stars.set('Furud', { ra: 95.078300, dec: -30.063367, mag: 3.02 });
-stars.set('Gacrux', { ra: 187.791498, dec: -57.113213, mag: 1.59 });
-stars.set('Giausar', { ra: 172.850920, dec: 69.331075, mag: 3.82 });
-stars.set('Gienah', { ra: 183.951543, dec: -17.541929, mag: 2.58 }); // Gienah Corvi (Crv)
-stars.set('Gomeisa', { ra: 111.787674, dec: 8.289316, mag: 2.89 });
-stars.set('Hadar', { ra: 210.955856, dec: -60.373035, mag: 0.61 }); // Also known as Agena
-stars.set('Hamal', { ra: 31.793357, dec: 23.462418, mag: 2.01 });
-stars.set('Homam', { ra: 340.365503, dec: 10.831363, mag: 3.41 });
-stars.set('Izar', { ra: 221.246763, dec: 27.074207, mag: 2.35 });
-stars.set('Kaus Australis', { ra: 276.042993, dec: -34.384616, mag: 1.79 });
-stars.set('Kaus Borealis', { ra: 276.992668, dec: -25.421701, mag: 2.82 });
-stars.set('Kaus Media', { ra: 275.248508, dec: -29.828104, mag: 2.72 });
-stars.set('Keid', { ra: 63.817999, dec: -7.652872, mag: 4.43 });
-stars.set('Kochab', { ra: 222.676357, dec: 74.155504, mag: 2.07 });
-stars.set('Kornephoros', { ra: 247.554998, dec: 21.489611, mag: 2.78 });
-stars.set('Lesath', { ra: 262.690979, dec: -37.295813, mag: 2.70 });
-stars.set('Maia', { ra: 56.456695, dec: 24.367751, mag: 3.87 });
-stars.set('Marfik', { ra: 247.728453, dec: 1.983888, mag: 3.82 });
-stars.set('Markab', { ra: 346.190223, dec: 15.205267, mag: 2.49 });
-stars.set('Matar', { ra: 340.750579, dec: 30.221244, mag: 2.93 });
-stars.set('Mebsuta', { ra: 100.983026, dec: 25.131127, mag: 3.06 });
-stars.set('Megrez', { ra: 183.856503, dec: 57.032615, mag: 3.32 });
-stars.set('Meissa', { ra: 83.784486, dec: 9.934156, mag: 3.39 });
-stars.set('Mekbuda', { ra: 106.027215, dec: 20.570295, mag: 4.01 });
-stars.set('Menkalinan', { ra: 89.882179, dec: 44.947433, mag: 1.90 });
-stars.set('Menkar', { ra: 45.569885, dec: 4.089737, mag: 2.54 });
-stars.set('Menkent', { ra: 211.670617, dec: -36.369958, mag: 2.06 });
-stars.set('Merak', { ra: 165.460319, dec: 56.382426, mag: 2.34 });
-stars.set('Merope', { ra: 56.581552, dec: 23.948348, mag: 4.14 });
-stars.set('Mesarthim', { ra: 28.382560, dec: 19.293852, mag: 4.75 });
-stars.set('Miaplacidus', { ra: 138.299906, dec: -69.717208, mag: 1.67 });
-stars.set('Mimosa', { ra: 191.930263, dec: -59.688764, mag: 1.25 }); // Also known as Becrux
-stars.set('Minelauva', { ra: 193.900869, dec: 3.397470, mag: 3.39 });
-stars.set('Mintaka', { ra: 83.001667, dec: -0.299095, mag: 2.25 });
-stars.set('Mira', { ra: 34.836617, dec: -2.977640, mag: 3.0 }); // Magnitude varies (2.0 - 10.1)
-stars.set('Mirach', { ra: 17.433013, dec: 35.620557, mag: 2.07 });
-stars.set('Mirfak', { ra: 51.080709, dec: 49.861179, mag: 1.79 });
-stars.set('Mirzam', { ra: 95.674939, dec: -17.955919, mag: 1.98 });
-stars.set('Mizar', { ra: 200.981429, dec: 54.925362, mag: 2.23 });
-stars.set('Muliphein', { ra: 105.939554, dec: -15.633286, mag: 4.11 });
-stars.set('Muphrid', { ra: 208.671161, dec: 18.397717, mag: 2.68 });
-stars.set('Muscida', { ra: 127.566128, dec: 60.718170, mag: 3.35 });
-stars.set('Nunki', { ra: 283.816360, dec: -26.296724, mag: 2.05 });
-stars.set('Peacock', { ra: 306.411904, dec: -56.735090, mag: 1.94 });
-stars.set('Phecda', { ra: 178.457679, dec: 53.694758, mag: 2.41 });
-stars.set('Pherkad', { ra: 230.182150, dec: 71.834017, mag: 3.00 });
-stars.set('Pleione', { ra: 57.296738, dec: 24.136710, mag: 5.05 }); // Magnitude can vary
-stars.set('Polaris', { ra: 37.954561, dec: 89.264109, mag: 2.13 }); // Magnitude can vary
-stars.set('Pollux', { ra: 116.328958, dec: 28.026199, mag: 1.16 });
-stars.set('Porrima', { ra: 190.415181, dec: -1.449373, mag: 3.44 });
-stars.set('Procyon', { ra: 114.825493, dec: 5.224993, mag: 0.40 });
-stars.set('Propus', { ra: 93.719405, dec: 22.506794, mag: 3.32 });
-stars.set('Rasalgethi', { ra: 258.661910, dec: 14.390333, mag: 3.37 }); // Combined magnitude
-stars.set('Rasalhague', { ra: 263.733627, dec: 12.560035, mag: 2.08 });
-stars.set('Rastaban', { ra: 262.608174, dec: 52.301389, mag: 2.79 });
-stars.set('Regulus', { ra: 152.092962, dec: 11.967209, mag: 1.36 });
-stars.set('Rigel', { ra: 78.634467, dec: -8.201638, mag: 0.18 });
-stars.set('Rigil Kentaurus', { ra: 219.902066, dec: -60.833975, mag: -0.01 }); // Combined magnitude of A component
-stars.set('Rotanev', { ra: 309.387235, dec: 14.595115, mag: 3.64 });
-stars.set('Ruchbah', { ra: 21.453964, dec: 60.235284, mag: 2.66 });
-stars.set('Sabik', { ra: 257.594529, dec: -15.724907, mag: 2.43 });
-stars.set('Sadalmelik', { ra: 331.445983, dec: -0.319849, mag: 2.95 });
-stars.set('Sadalsuud', { ra: 322.889715, dec: -5.571176, mag: 2.90 });
-stars.set('Sadr', { ra: 305.557091, dec: 40.256679, mag: 2.23 });
-stars.set('Saiph', { ra: 86.939120, dec: -9.669605, mag: 2.07 });
-stars.set('Sargas', { ra: 264.329711, dec: -42.997824, mag: 1.86 });
-stars.set('Scheat', { ra: 345.943572, dec: 28.082785, mag: 2.44 });
-stars.set('Schedar', { ra: 10.126838, dec: 56.537331, mag: 2.24 });
-stars.set('Seginus', { ra: 218.019466, dec: 38.308251, mag: 3.04 }); // Also known as Gamma Boötis
-stars.set('Shaula', { ra: 263.402167, dec: -37.103824, mag: 2.08 }); // Magnitude is for combined system
-stars.set('Sheliak', { ra: 282.519978, dec: 33.362668, mag: 3.60 }); // Magnitude varies
-stars.set('Sheratan', { ra: 28.660046, dec: 20.808031, mag: 2.70 });
-stars.set('Sirius', { ra: 101.287155, dec: -16.716116, mag: -1.45 });
-stars.set('Skat', { ra: 343.662556, dec: -15.820827, mag: 3.27 });
-stars.set('Spica', { ra: 201.298247, dec: -11.161319, mag: 0.98 }); // Magnitude can vary slightly
-stars.set('Sualocin', { ra: 309.909530, dec: 15.912073, mag: 3.86 });
-stars.set('Suhail', { ra: 136.998993, dec: -43.432589, mag: 2.23 });
-stars.set('Sulafat', { ra: 284.735928, dec: 32.689557, mag: 3.25 });
-stars.set('Tarazed', { ra: 296.564915, dec: 10.613262, mag: 2.72 });
-stars.set('Taygeta', { ra: 56.302063, dec: 24.467270, mag: 4.30 });
-stars.set('Thuban', { ra: 211.097291, dec: 64.375851, mag: 3.67 });
-stars.set('Unukalhai', { ra: 236.066976, dec: 6.425629, mag: 2.63 });
-stars.set('Vega', { ra: 279.234735, dec: 38.783689, mag: 0.03 });
-stars.set('Vindemiatrix', { ra: 195.544157, dec: 10.959149, mag: 2.85 });
-stars.set('Wasat', { ra: 110.030749, dec: 21.982316, mag: 3.52 });
-stars.set('Wezen', { ra: 107.097850, dec: -26.393200, mag: 1.83 });
-stars.set('Yed Posterior', { ra: 244.580374, dec: -4.692510, mag: 3.23 });
-stars.set('Yed Prior', { ra: 243.586411, dec: -3.694323, mag: 2.73 });
-stars.set('Zaniah', { ra: 184.976476, dec: -0.666793, mag: 4.60 }); // Combined magnitude
-stars.set('Zaurak', { ra: 59.507360, dec: -13.508516, mag: 2.97 });
-stars.set('Zavijava', { ra: 177.673826, dec: 1.764717, mag: 3.59 });
-stars.set('Zosma', { ra: 168.527089, dec: 20.523718, mag: 2.56 });
-stars.set('Zubenelgenubi', { ra: 222.719638, dec: -16.041777, mag: 2.75 });
-stars.set('Zubeneschamali', { ra: 229.251724, dec: -9.382914, mag: 2.61 });
-stars.set('Epsilon UMi', { ra: 251.4926736, dec: 82.03725647, mag: 4.19 });
-stars.set('Zeta UMi', { ra: 236.01466215, dec: 77.79449411, mag: 4.29 });
-stars.set('Eta UMi', { ra: 244.37612595, dec: 75.75534308, mag: 4.95 });
-stars.set('Gamma Cas', { ra: 14.1770877, dec: 60.71674956, mag: 2.47 });
+// Helper to add star
+// RA in degrees (or convert if hours passed? sticking to degrees for simplicity in data)
+// Note: 1h = 15 deg.
+// Data below: RA is in hours (decimal), Dec in degrees.
+// We will convert RA to degrees in the addStar function or during init.
+// Let's assume input RA is in Hours, Dec in Degrees.
+function addStar(name, raHours, decDeg, mag, details = {}) {
+    stars.set(name, {
+        ra: raHours * 15, // Convert to degrees
+        dec: decDeg,
+        mag,
+        ...details
+    });
+}
 
-//... thousands more stars...
+// Top Brightest Stars with detailed metadata
+addStar('Sirius', 6.75, -16.7, -1.46, { dist: '8.6 ly', type: 'A0 (Main Sequence)', meaning: 'Scorching (Greek)', constellation: 'Canis Major' });
+addStar('Canopus', 6.40, -52.7, -0.72, { dist: '310 ly', type: 'F0 (Supergiant)', meaning: 'Pilot of Argo (Greek)', constellation: 'Carina' });
+addStar('Arcturus', 14.26, 19.1, -0.04, { dist: '37 ly', type: 'K0 (Giant)', meaning: 'Guardian of the Bear (Greek)', constellation: 'Boötes' });
+addStar('Rigil Kentaurus', 14.66, -60.8, -0.01, { dist: '4.3 ly', type: 'G2 (Main Sequence)', meaning: 'Foot of the Centaur (Arabic)', constellation: 'Centaurus' });
+addStar('Vega', 18.62, 38.8, 0.03, { dist: '25 ly', type: 'A0 (Main Sequence)', meaning: 'Falling Eagle (Arabic)', constellation: 'Lyra' });
+addStar('Capella', 5.27, 46.0, 0.08, { dist: '42 ly', type: 'G5 (Giant)', meaning: 'Little She-Goat (Latin)', constellation: 'Auriga' });
+addStar('Rigel', 5.24, -8.2, 0.12, { dist: '860 ly', type: 'B8 (Supergiant)', meaning: 'Foot (Arabic)', constellation: 'Orion' });
+addStar('Procyon', 7.65, 5.2, 0.38, { dist: '11.4 ly', type: 'F5 (Main Sequence)', meaning: 'Before the Dog (Greek)', constellation: 'Canis Minor' });
+addStar('Achernar', 1.63, -57.2, 0.46, { dist: '144 ly', type: 'B3 (Main Sequence)', meaning: 'End of the River (Arabic)', constellation: 'Eridanus' });
+addStar('Betelgeuse', 5.92, 7.4, 0.50, { dist: '640 ly', type: 'M1 (Red Supergiant)', meaning: 'Armpit of the Giant (Arabic)', constellation: 'Orion' }); // Mag varies
+addStar('Hadar', 14.06, -60.4, 0.61, { dist: '350 ly', type: 'B1 (Giant)', meaning: 'Ground (Arabic)', constellation: 'Centaurus' });
+addStar('Acrux', 12.44, -63.1, 0.76, { dist: '320 ly', type: 'B0.5 (Main Sequence)', meaning: 'Cross (Latin)', constellation: 'Crux' });
+addStar('Altair', 19.85, 8.9, 0.77, { dist: '16.8 ly', type: 'A7 (Main Sequence)', meaning: 'The Eagle (Arabic)', constellation: 'Aquila' });
+addStar('Aldebaran', 4.60, 16.5, 0.85, { dist: '65 ly', type: 'K5 (Giant)', meaning: 'The Follower (Arabic)', constellation: 'Taurus' });
+addStar('Antares', 16.49, -26.4, 0.96, { dist: '600 ly', type: 'M1 (Supergiant)', meaning: 'Rival of Mars (Greek)', constellation: 'Scorpius' });
+addStar('Spica', 13.42, -11.2, 1.04, { dist: '260 ly', type: 'B1 (Main Sequence)', meaning: 'Ear of Wheat (Latin)', constellation: 'Virgo' });
+addStar('Pollux', 7.76, 28.0, 1.14, { dist: '34 ly', type: 'K0 (Giant)', meaning: 'Twin Brother (Greek)', constellation: 'Gemini' });
+addStar('Fomalhaut', 22.96, -29.6, 1.16, { dist: '25 ly', type: 'A3 (Main Sequence)', meaning: 'Mouth of the Fish (Arabic)', constellation: 'Piscis Austrinus' });
+addStar('Deneb', 20.69, 45.3, 1.25, { dist: '2600 ly', type: 'A2 (Supergiant)', meaning: 'Tail (Arabic)', constellation: 'Cygnus' });
+addStar('Mimosa', 12.80, -59.7, 1.25, { dist: '350 ly', type: 'B0.5 (Giant)', meaning: 'Actor (Latin)', constellation: 'Crux' });
+addStar('Regulus', 10.14, 11.9, 1.35, { dist: '77 ly', type: 'B7 (Main Sequence)', meaning: 'Little King (Latin)', constellation: 'Leo' });
+addStar('Adhara', 6.98, -28.9, 1.50, { dist: '430 ly', type: 'B2 (Bright Giant)', meaning: 'Virgins (Arabic)', constellation: 'Canis Major' });
+addStar('Castor', 7.58, 31.9, 1.58, { dist: '52 ly', type: 'A1 (Main Sequence)', meaning: 'Twin Brother (Greek)', constellation: 'Gemini' });
+addStar('Gacrux', 12.52, -57.1, 1.63, { dist: '88 ly', type: 'M3 (Giant)', meaning: 'Gamma Crucis', constellation: 'Crux' });
+addStar('Shaula', 17.56, -37.1, 1.62, { dist: '700 ly', type: 'B1 (Subgiant)', meaning: 'Stinger (Arabic)', constellation: 'Scorpius' });
+addStar('Bellatrix', 5.42, 6.3, 1.64, { dist: '240 ly', type: 'B2 (Giant)', meaning: 'Female Warrior (Latin)', constellation: 'Orion' });
+addStar('Elnath', 5.44, 28.6, 1.65, { dist: '130 ly', type: 'B7 (Giant)', meaning: 'The Butting One (Arabic)', constellation: 'Taurus' });
+addStar('Miaplacidus', 9.22, -69.7, 1.67, { dist: '111 ly', type: 'A2 (Subgiant)', meaning: 'Peaceful Waters (Latin/Arabic)', constellation: 'Carina' });
+addStar('Alnilam', 5.60, -1.2, 1.69, { dist: '1300 ly', type: 'B0 (Supergiant)', meaning: 'String of Pearls (Arabic)', constellation: 'Orion' });
+addStar('Alnair', 22.14, -46.9, 1.74, { dist: '101 ly', type: 'B7 (Main Sequence)', meaning: 'The Bright One (Arabic)', constellation: 'Grus' });
+addStar('Alnitak', 5.68, -1.9, 1.74, { dist: '800 ly', type: 'O9 (Supergiant)', meaning: 'The Girdle (Arabic)', constellation: 'Orion' });
+addStar('Alioth', 12.90, 55.9, 1.76, { dist: '81 ly', type: 'A0 (Variable)', meaning: 'The Bull (Arabic)', constellation: 'Ursa Major' });
+addStar('Kaus Australis', 18.40, -34.4, 1.79, { dist: '140 ly', type: 'B9 (Giant)', meaning: 'Southern Bow (Arabic)', constellation: 'Sagittarius' });
+addStar('Mirfak', 3.41, 49.8, 1.79, { dist: '590 ly', type: 'F5 (Supergiant)', meaning: 'Elbow (Arabic)', constellation: 'Perseus' });
+addStar('Dubhe', 11.06, 61.8, 1.79, { dist: '120 ly', type: 'K0 (Giant)', meaning: 'Bear (Arabic)', constellation: 'Ursa Major' });
+addStar('Wezen', 7.14, -26.4, 1.83, { dist: '1800 ly', type: 'F8 (Supergiant)', meaning: 'Weight (Arabic)', constellation: 'Canis Major' });
+addStar('Alkaid', 13.79, 49.3, 1.85, { dist: '100 ly', type: 'B3 (Main Sequence)', meaning: 'Chief of Mourners (Arabic)', constellation: 'Ursa Major' });
+addStar('Sargas', 17.62, -43.0, 1.86, { dist: '270 ly', type: 'F0 (Bright Giant)', meaning: 'Scorpion (Sumerian)', constellation: 'Scorpius' });
+addStar('Avior', 8.38, -59.5, 1.86, { dist: '630 ly', type: 'K3 (Giant)', meaning: 'Unknown', constellation: 'Carina' });
+addStar('Menkalinan', 5.99, 44.9, 1.90, { dist: '82 ly', type: 'A2 (Subgiant)', meaning: 'Shoulder of Rein Holder (Arabic)', constellation: 'Auriga' });
+addStar('Atria', 16.81, -69.0, 1.91, { dist: '420 ly', type: 'K2 (Giant)', meaning: 'Alpha Trianguli Australis', constellation: 'Triangulum Australe' });
+addStar('Alhena', 6.63, 16.4, 1.93, { dist: '100 ly', type: 'A0 (Subgiant)', meaning: 'The Brand (Arabic)', constellation: 'Gemini' });
+addStar('Peacock', 20.43, -56.7, 1.94, { dist: '180 ly', type: 'B2 (Subgiant)', meaning: 'Peacock (English)', constellation: 'Pavo' });
+addStar('Polaris', 2.53, 89.3, 1.97, { dist: '430 ly', type: 'F7 (Supergiant)', meaning: 'Pole Star (Latin)', constellation: 'Ursa Minor' });
+addStar('Mirzam', 6.38, -17.9, 1.98, { dist: '500 ly', type: 'B1 (Giant)', meaning: 'The Herald (Arabic)', constellation: 'Canis Major' });
+addStar('Alphard', 9.46, -8.7, 1.99, { dist: '180 ly', type: 'K3 (Giant)', meaning: 'The Solitary One (Arabic)', constellation: 'Hydra' });
+addStar('Hamal', 2.12, 23.5, 2.01, { dist: '66 ly', type: 'K2 (Giant)', meaning: 'Head of the Ram (Arabic)', constellation: 'Aries' });
+addStar('Algieba', 10.33, 19.8, 2.01, { dist: '130 ly', type: 'K0 (Giant)', meaning: 'The Forehead (Arabic)', constellation: 'Leo' });
+addStar('Deneb Kaitos', 0.72, -18.0, 2.04, { dist: '96 ly', type: 'K0 (Giant)', meaning: 'Tail of Sea Monster (Arabic)', constellation: 'Cetus' });
+addStar('Nunki', 18.92, -26.3, 2.05, { dist: '220 ly', type: 'B2 (Main Sequence)', meaning: 'Foreyoke (Babylonian)', constellation: 'Sagittarius' });
+addStar('Menkent', 14.11, -36.4, 2.06, { dist: '61 ly', type: 'K0 (Giant)', meaning: 'Shoulder of Centaur (Arabic)', constellation: 'Centaurus' });
+addStar('Mirach', 1.16, 35.6, 2.07, { dist: '200 ly', type: 'M0 (Giant)', meaning: 'The Girdle (Arabic)', constellation: 'Andromeda' });
+addStar('Alpheratz', 0.14, 29.1, 2.07, { dist: '97 ly', type: 'B8 (Subgiant)', meaning: 'Horse Shoulder (Arabic)', constellation: 'Andromeda' });
+addStar('Saiph', 5.80, -9.7, 2.07, { dist: '720 ly', type: 'B0 (Supergiant)', meaning: 'Sword of the Giant (Arabic)', constellation: 'Orion' });
+addStar('Kochab', 14.84, 74.2, 2.07, { dist: '130 ly', type: 'K4 (Giant)', meaning: 'Star (Arabic)', constellation: 'Ursa Minor' });
+addStar('Rasalhague', 17.58, 12.6, 2.08, { dist: '47 ly', type: 'A5 (Giant)', meaning: 'Head of Serpent Charmer (Arabic)', constellation: 'Ophiuchus' });
+addStar('Algol', 3.14, 40.9, 2.09, { dist: '93 ly', type: 'B8 (Main Sequence)', meaning: 'The Demon Head (Arabic)', constellation: 'Perseus' });
+addStar('Almach', 2.06, 42.3, 2.10, { dist: '350 ly', type: 'K3 (Giant)', meaning: 'Caracal (Arabic)', constellation: 'Andromeda' });
+addStar('Denebola', 11.82, 14.6, 2.14, { dist: '36 ly', type: 'A3 (Main Sequence)', meaning: 'Lion Tail (Arabic)', constellation: 'Leo' });
+addStar('Tsih', 0.94, 60.7, 2.15, { dist: '610 ly', type: 'B0 (Subgiant)', meaning: 'Whip (Chinese)', constellation: 'Cassiopeia' }); // Gamma Cas
+addStar('Muhlifain', 12.69, -48.9, 2.20, { dist: '130 ly', type: 'A0 (Giant)', meaning: 'Oath (Arabic)', constellation: 'Centaurus' }); // Gamma Centauri
+addStar('Alphecca', 15.58, 26.7, 2.22, { dist: '75 ly', type: 'A0 (Main Sequence)', meaning: 'Bright One of the Dish (Arabic)', constellation: 'Corona Borealis' });
+addStar('Suhail', 9.13, -43.4, 2.23, { dist: '570 ly', type: 'K4 (Supergiant)', meaning: 'Noble (Arabic)', constellation: 'Vela' });
+addStar('Sadr', 20.37, 40.3, 2.23, { dist: '1500 ly', type: 'F8 (Supergiant)', meaning: 'Breast (Arabic)', constellation: 'Cygnus' });
+addStar('Mizar', 13.40, 54.9, 2.23, { dist: '78 ly', type: 'A2 (Main Sequence)', meaning: 'Groin (Arabic)', constellation: 'Ursa Major' });
+addStar('Schedar', 0.67, 56.5, 2.24, { dist: '230 ly', type: 'K0 (Giant)', meaning: 'Breast (Arabic)', constellation: 'Cassiopeia' });
+addStar('Eltanin', 17.94, 51.5, 2.24, { dist: '150 ly', type: 'K5 (Giant)', meaning: 'The Dragon (Arabic)', constellation: 'Draco' });
+addStar('Mintaka', 5.53, -0.3, 2.25, { dist: '900 ly', type: 'O9 (Giant)', meaning: 'Belt (Arabic)', constellation: 'Orion' });
+addStar('Caph', 0.15, 59.1, 2.28, { dist: '55 ly', type: 'F2 (Giant)', meaning: 'Palm (Arabic)', constellation: 'Cassiopeia' });
+addStar('Dschubba', 16.00, -22.6, 2.29, { dist: '400 ly', type: 'B0 (Subgiant)', meaning: 'Forehead (Arabic)', constellation: 'Scorpius' });
+addStar('Merak', 11.03, 56.4, 2.34, { dist: '79 ly', type: 'A1 (Main Sequence)', meaning: 'Loins (Arabic)', constellation: 'Ursa Major' });
+addStar('Enif', 21.74, 9.9, 2.38, { dist: '670 ly', type: 'K2 (Supergiant)', meaning: 'Nose (Arabic)', constellation: 'Pegasus' });
+addStar('Ankaa', 0.44, -42.3, 2.40, { dist: '77 ly', type: 'K0 (Giant)', meaning: 'Phoenix (Arabic)', constellation: 'Phoenix' });
+addStar('Phecda', 11.90, 53.7, 2.41, { dist: '84 ly', type: 'A0 (Main Sequence)', meaning: 'Thigh (Arabic)', constellation: 'Ursa Major' });
+addStar('Sabik', 17.17, -15.7, 2.43, { dist: '88 ly', type: 'A2 (Main Sequence)', meaning: 'Preceding One (Arabic)', constellation: 'Ophiuchus' });
+addStar('Scheat', 23.06, 28.1, 2.44, { dist: '200 ly', type: 'M2 (Giant)', meaning: 'Shin (Arabic)', constellation: 'Pegasus' });
+addStar('Alderamin', 21.31, 62.6, 2.45, { dist: '49 ly', type: 'A7 (Main Sequence)', meaning: 'Right Arm (Arabic)', constellation: 'Cepheus' });
+addStar('Aludra', 7.40, -29.3, 2.45, { dist: '3000 ly', type: 'B5 (Supergiant)', meaning: 'Virginity (Arabic)', constellation: 'Canis Major' });
+addStar('Markab', 23.08, 15.2, 2.49, { dist: '140 ly', type: 'B9 (Giant)', meaning: 'Saddle (Arabic)', constellation: 'Pegasus' });
+addStar('Menkar', 3.04, 4.1, 2.54, { dist: '250 ly', type: 'M1 (Giant)', meaning: 'Nostril (Arabic)', constellation: 'Cetus' });
+addStar('Zosma', 11.24, 20.5, 2.56, { dist: '58 ly', type: 'A4 (Main Sequence)', meaning: 'Girdle (Arabic)', constellation: 'Leo' });
 
-// Constellation data (expanded)
+// Add remaining needed for constellations if not in top list
+// Ursa Major: Megrez
+addStar('Megrez', 12.26, 57.0, 3.32, { constellation: 'Ursa Major' });
+// Ursa Minor: Pherkad, Epsilon, Zeta, Eta
+addStar('Pherkad', 15.34, 71.8, 3.00, { constellation: 'Ursa Minor' });
+addStar('Epsilon UMi', 16.76, 82.0, 4.19, { constellation: 'Ursa Minor' });
+addStar('Zeta UMi', 15.73, 77.8, 4.29, { constellation: 'Ursa Minor' });
+addStar('Eta UMi', 16.29, 75.8, 4.95, { constellation: 'Ursa Minor' });
+// Orion: Meissa
+addStar('Meissa', 5.58, 9.9, 3.39, { constellation: 'Orion' });
+// Cassiopeia: Ruchbah
+addStar('Ruchbah', 1.43, 60.2, 2.66, { constellation: 'Cassiopeia' });
+
+
+// Constellation data
 const constellations = [
     {
         name: 'Ursa Major',
         stars: ['Dubhe', 'Merak', 'Phecda', 'Megrez', 'Alioth', 'Mizar', 'Alkaid'],
-        mythology: 'The Great Bear, associated with Artemis in Greek mythology.',
+        mythology: 'The Great Bear. One of the oldest and most recognizable patterns in the sky.',
         lines: [
             { from: 'Dubhe', to: 'Merak' },
             { from: 'Merak', to: 'Phecda' },
             { from: 'Phecda', to: 'Megrez' },
             { from: 'Megrez', to: 'Alioth' },
             { from: 'Alioth', to: 'Mizar' },
-            { from: 'Mizar', to: 'Alkaid' }
+            { from: 'Mizar', to: 'Alkaid' },
+            { from: 'Merak', to: 'Dubhe' } // Closing the box usually
         ]
     },
     {
         name: 'Ursa Minor',
-        stars: ['Polaris', 'Kochab', 'Pherkad', 'Yildun', 'Epsilon UMi', 'Zeta UMi', 'Eta UMi'],
-        mythology: 'The Little Bear. In Greek mythology, associated with Ida, the nymph who cared for Zeus, or Arcas, son of Zeus and Callisto.',
+        stars: ['Polaris', 'Kochab', 'Pherkad', 'Epsilon UMi', 'Zeta UMi', 'Eta UMi'],
+        mythology: 'The Little Bear. Contains Polaris, the North Star.',
         lines: [
-            { from: 'Polaris', to: 'Yildun' },
-            { from: 'Yildun', to: 'Epsilon UMi' },
+            { from: 'Polaris', to: 'Epsilon UMi' }, // Approximated chain
             { from: 'Epsilon UMi', to: 'Zeta UMi' },
             { from: 'Zeta UMi', to: 'Eta UMi' },
             { from: 'Eta UMi', to: 'Kochab' },
@@ -229,399 +145,506 @@ const constellations = [
     },
     {
         name: 'Orion',
-        stars: ['Betelgeuse', 'Rigel', 'Bellatrix', 'Alnitak', 'Alnilam', 'Mintaka', 'Saiph', 'Meissa', 'Hatysa'], // Hatysa for sword
-        mythology: 'The Hunter. In Greek mythology, a giant huntsman. Known for his belt of three bright stars and his sword.',
+        stars: ['Betelgeuse', 'Rigel', 'Bellatrix', 'Alnitak', 'Alnilam', 'Mintaka', 'Saiph', 'Meissa'],
+        mythology: 'The Hunter. A prominent constellation located on the celestial equator.',
         lines: [
-            { from: 'Meissa', to: 'Betelgeuse' }, // Head to shoulder
-            { from: 'Meissa', to: 'Bellatrix' }, // Head to other shoulder
-            { from: 'Betelgeuse', to: 'Mintaka' }, // Shoulder to belt (Mintaka is westernmost belt star)
-            { from: 'Bellatrix', to: 'Alnitak' }, // Other shoulder to belt (Alnitak is easternmost belt star)
-            { from: 'Mintaka', to: 'Alnilam' },   // Belt
-            { from: 'Alnilam', to: 'Alnitak' },   // Belt
-            { from: 'Mintaka', to: 'Rigel' },     // Belt to knee/foot
-            { from: 'Alnitak', to: 'Saiph' },     // Belt to other knee/foot
-            // Sword from belt (Alnilam is middle belt star)
-            { from: 'Alnilam', to: 'Hatysa' } // Hatysa is Iota Orionis, in the sword
+            { from: 'Meissa', to: 'Betelgeuse' },
+            { from: 'Meissa', to: 'Bellatrix' },
+            { from: 'Betelgeuse', to: 'Alnitak' },
+            { from: 'Bellatrix', to: 'Mintaka' },
+            { from: 'Mintaka', to: 'Alnilam' },
+            { from: 'Alnilam', to: 'Alnitak' },
+            { from: 'Mintaka', to: 'Rigel' },
+            { from: 'Alnitak', to: 'Saiph' },
+            { from: 'Alnilam', to: 'Saiph' } // Sometimes drawn like this
         ]
     },
     {
         name: 'Cassiopeia',
-        stars: ['Segin', 'Ruchbah', 'Gamma Cas', 'Schedar', 'Caph'],
-        mythology: 'The Queen. In Greek mythology, wife of Cepheus and mother of Andromeda. Punished for her vanity by being placed upside down in the sky for half the year.',
+        stars: ['Tsih', 'Schedar', 'Caph', 'Ruchbah'], // Tsih is Gamma Cas
+        mythology: 'The Queen. Easily recognizable by its W shape.',
         lines: [
             { from: 'Caph', to: 'Schedar' },
-            { from: 'Schedar', to: 'Gamma Cas' },
-            { from: 'Gamma Cas', to: 'Ruchbah' },
-            { from: 'Ruchbah', to: 'Segin' }
+            { from: 'Schedar', to: 'Tsih' },
+            { from: 'Tsih', to: 'Ruchbah' }
         ]
     },
-    //... dozens of constellations...
+    {
+        name: 'Crux',
+        stars: ['Acrux', 'Mimosa', 'Gacrux'],
+        mythology: 'The Southern Cross. The smallest of the 88 modern constellations.',
+        lines: [
+            { from: 'Acrux', to: 'Gacrux' },
+            { from: 'Mimosa', to: 'Gacrux' } // Approximate
+        ]
+    },
+    {
+        name: 'Canis Major',
+        stars: ['Sirius', 'Mirzam', 'Wezen', 'Adhara', 'Aludra'],
+        mythology: 'The Great Dog. Contains Sirius, the brightest star in the night sky.',
+        lines: [
+            { from: 'Sirius', to: 'Mirzam' },
+            { from: 'Sirius', to: 'Wezen' },
+            { from: 'Wezen', to: 'Adhara' },
+            { from: 'Wezen', to: 'Aludra' }
+        ]
+    },
+    {
+        name: 'Scorpius',
+        stars: ['Antares', 'Shaula', 'Sargas', 'Dschubba'],
+        mythology: 'The Scorpion. Associated with the story of Orion.',
+        lines: [
+            { from: 'Antares', to: 'Dschubba' },
+            { from: 'Antares', to: 'Sargas' },
+            { from: 'Sargas', to: 'Shaula' }
+        ]
+    },
+    {
+        name: 'Gemini',
+        stars: ['Castor', 'Pollux', 'Alhena'],
+        mythology: 'The Twins. Represents Castor and Pollux (Polydeuces).',
+        lines: [
+            { from: 'Castor', to: 'Pollux' },
+            { from: 'Pollux', to: 'Alhena' }
+        ]
+    },
+     {
+        name: 'Leo',
+        stars: ['Regulus', 'Denebola', 'Algieba', 'Zosma'],
+        mythology: 'The Lion. Represents the Nemean Lion killed by Hercules.',
+        lines: [
+            { from: 'Regulus', to: 'Algieba' },
+            { from: 'Algieba', to: 'Zosma' },
+            { from: 'Zosma', to: 'Denebola' },
+            { from: 'Regulus', to: 'Denebola' } // Base
+        ]
+    },
+    {
+        name: 'Pegasus',
+        stars: ['Markab', 'Scheat', 'Enif', 'Alpheratz'], // Alpheratz shared with Andromeda
+        mythology: 'The Winged Horse. Born from the blood of Medusa.',
+        lines: [
+            { from: 'Markab', to: 'Scheat' },
+            { from: 'Scheat', to: 'Alpheratz' },
+            { from: 'Alpheratz', to: 'Markab' },
+            { from: 'Markab', to: 'Enif' } // Nose
+        ]
+    }
 ];
 
-// Canvas and context
-const canvas = document.createElement('canvas');
-canvas.style.position = 'absolute';
-canvas.style.top = '0';
-canvas.style.left = '0';
-canvas.style.zIndex = '10'; // Ensure it is above background but below UI
-canvas.style.background = "transparent"; // Make transparent to see background stars
-starMap.appendChild(canvas);
-const ctx = canvas.getContext('2d');
 
-// Background stars canvas
-const bgCanvas = document.createElement('canvas');
-bgCanvas.style.position = 'absolute';
-bgCanvas.style.top = '0';
-bgCanvas.style.left = '0';
-bgCanvas.style.zIndex = '0'; // Behind everything
-bgCanvas.style.background = "#000";
-starMap.appendChild(bgCanvas);
-const bgCtx = bgCanvas.getContext('2d');
+// --- Astronomy Math ---
 
-function generateBackgroundStars() {
-    bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-    const numStars = 500;
-    bgCtx.fillStyle = '#FFFFFF';
-    for (let i = 0; i < numStars; i++) {
-        const x = Math.random() * bgCanvas.width;
-        const y = Math.random() * bgCanvas.height;
-        const radius = Math.random() * 0.8;
-        const alpha = Math.random() * 0.5 + 0.1;
-
-        bgCtx.beginPath();
-        bgCtx.arc(x, y, radius, 0, Math.PI * 2);
-        bgCtx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-        bgCtx.fill();
+const Astronomy = {
+    degToRad: (deg) => deg * (Math.PI / 180),
+    radToDeg: (rad) => rad * (180 / Math.PI),
+    getJulianDate: (date) => (date.getTime() / 86400000) - (date.getTimezoneOffset() / 1440) + 2440587.5,
+    getGST: (jd) => {
+        const T = (jd - 2451545.0) / 36525.0;
+        let gst = 280.46061837 + 360.98564736629 * (jd - 2451545.0) + T*T*(0.000387933 - T/38710000.0);
+        return gst % 360;
+    },
+    getLST: (gst, longitude) => (gst + longitude) % 360,
+    equatorialToHorizontal: (ra, dec, lat, lst) => {
+        const decRad = Astronomy.degToRad(dec);
+        const latRad = Astronomy.degToRad(lat);
+        let H = lst - ra;
+        if (H < 0) H += 360;
+        const HRad = Astronomy.degToRad(H);
+        const sinAlt = Math.sin(decRad) * Math.sin(latRad) + Math.cos(decRad) * Math.cos(latRad) * Math.cos(HRad);
+        const altRad = Math.asin(sinAlt);
+        const cosAz = (Math.sin(decRad) - Math.sin(latRad) * sinAlt) / (Math.cos(latRad) * Math.cos(altRad));
+        let azRad = Math.acos(Math.max(-1, Math.min(1, cosAz)));
+        if (Math.sin(HRad) > 0) azRad = 2 * Math.PI - azRad;
+        return { alt: Astronomy.radToDeg(altRad), az: Astronomy.radToDeg(azRad) };
     }
-}
+};
 
-function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    bgCanvas.width = window.innerWidth;
-    bgCanvas.height = window.innerHeight;
-    generateBackgroundStars();
-    // Redrawing will be handled by the drawStars animation loop
-}
-window.addEventListener('resize', resizeCanvas, false);
-// Initial call to set canvas size
-resizeCanvas();
+// --- Rendering & App Logic ---
 
-// Function to convert coordinates
-function convertCoords(ra, dec) {
-    const x = (ra / 360) * canvas.width;
-    const y = (1 - (dec + 90) / 180) * canvas.height;
-    return { x, y };
-}
+class SkyApp {
+    constructor() {
+        this.container = document.getElementById('star-map');
+        this.canvas = document.createElement('canvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.container.appendChild(this.canvas);
 
-// Function to draw stars on the canvas (animated)
-function drawStars() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const time = Date.now() * 0.001;
+        // Popup Element
+        this.popup = document.createElement('div');
+        this.popup.id = 'star-popup';
+        this.popup.style.display = 'none';
+        this.popup.style.position = 'absolute';
+        this.popup.style.backgroundColor = 'rgba(20, 20, 35, 0.95)';
+        this.popup.style.border = '1px solid #444466';
+        this.popup.style.padding = '10px';
+        this.popup.style.borderRadius = '5px';
+        this.popup.style.color = '#fff';
+        this.popup.style.pointerEvents = 'none'; // Let clicks pass through if needed, but mainly for display
+        this.popup.style.zIndex = '100';
+        this.popup.style.boxShadow = '0 0 10px rgba(0,0,0,0.5)';
+        this.popup.style.maxWidth = '200px';
+        this.popup.style.fontSize = '12px';
+        this.container.appendChild(this.popup);
 
-    for (const [starName, star] of stars) {
-        const { x, y } = convertCoords(star.ra, star.dec);
+        // Search Results container
+        this.searchResults = document.createElement('div');
+        this.searchResults.id = 'search-results';
+        document.querySelector('.control-group').appendChild(this.searchResults); // Append to parent of search input
 
-        ctx.beginPath();
-        const baseRadius = Math.max(1, (2 - star.mag) * 2);
+        this.width = this.container.clientWidth;
+        this.height = this.container.clientHeight;
 
-        // Twinkling effect
-        const randomSeed = star.ra * star.dec; // simple seed based on position
-        const twinkle = Math.sin(time * 2 + randomSeed) * 0.3 + 0.7; // oscillates between 0.4 and 1.0
+        this.latitude = 40.7128;
+        this.longitude = -74.0060;
+        this.date = new Date();
+        this.scale = 1.0;
 
-        if (star.highlighted) {
-            ctx.arc(x, y, baseRadius + 2, 0, 2 * Math.PI); // Larger radius for highlighted
-            ctx.fillStyle = `rgba(255, 215, 0, ${twinkle})`; // Gold with alpha
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = "#FFD700";
-        } else {
-            ctx.arc(x, y, baseRadius, 0, 2 * Math.PI);
-            ctx.fillStyle = `rgba(255, 255, 204, ${twinkle})`;
-            ctx.shadowBlur = 8 * twinkle;
-            ctx.shadowColor = "#FFF";
-        }
-        ctx.fill();
-    }
-    ctx.shadowBlur = 0; // Reset shadow blur after the loop
+        // Cache visible stars for interaction
+        this.renderedStars = [];
+        this.backgroundStars = [];
+        this.initBackgroundStars(2000);
 
-    // Draw constellation lines in the same animation frame
-    constellations.forEach(constellation => {
-        drawConstellationLines(constellation);
-    });
-
-    requestAnimationFrame(drawStars);
-}
-
-// Function to draw constellation lines (on canvas)
-function drawConstellationLines(constellation) {
-    ctx.beginPath();
-    let isAnyStarInConstellationHighlighted = false;
-    if (constellation.stars.some(starName => stars.get(starName)?.highlighted)) {
-        isAnyStarInConstellationHighlighted = true;
+        window.addEventListener('resize', () => this.resize());
+        this.setupControls();
+        this.resize();
+        this.startLoop();
     }
 
-    constellation.lines.forEach(line => {
-        const star1 = stars.get(line.from);
-        const star2 = stars.get(line.to);
-        if (star1 && star2) {
-            const { x: x1, y: y1 } = convertCoords(star1.ra, star1.dec);
-            const { x: x2, y: y2 } = convertCoords(star2.ra, star2.dec);
-            ctx.moveTo(x1, y1);
-            ctx.lineTo(x2, y2);
-        }
-    });
-
-    if (isAnyStarInConstellationHighlighted) {
-        ctx.strokeStyle = '#FFD700'; // Gold for highlighted constellation lines
-        ctx.lineWidth = 1.5;
-    } else if (constellation.hovered) {
-        ctx.strokeStyle = '#00BFFF'; // Deep Sky Blue for hovered
-        ctx.lineWidth = 2;
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = '#00BFFF';
-    } else {
-        ctx.strokeStyle = '#ccc';
-        ctx.lineWidth = 1;
-    }
-    ctx.stroke();
-    // Reset shadow
-    ctx.shadowBlur = 0;
-}
-
-// Event listeners for constellation clicks
-canvas.addEventListener('click', (e) => {
-    const rect = canvas.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-    let constellationFoundAndClicked = false;
-
-    for (const constellation of constellations) {
-        const starPoints = constellation.stars.map(starName => {
-            const star = stars.get(starName);
-            if (star) { // Check if star exists in the map
-                const { x, y } = convertCoords(star.ra, star.dec);
-                return { x, y };
-            }
-            return null; // Return null if star is not found
-        }).filter(p => p !== null); // Filter out any null entries
-
-        if (starPoints.length < 3) { // A polygon needs at least 3 points
-            continue;
-        }
-
-        if (isPointInPolygon(mouseX, mouseY, starPoints)) {
-            showConstellationInfo(constellation);
-            constellationFoundAndClicked = true;
-            break;
+    initBackgroundStars(count) {
+        for (let i = 0; i < count; i++) {
+            // Uniform distribution on sphere
+            const dec = Math.asin(2 * Math.random() - 1) * (180 / Math.PI);
+            const ra = Math.random() * 360;
+            const mag = 4 + Math.random() * 2.5; // Mag 4 to 6.5
+            this.backgroundStars.push({ ra, dec, mag });
         }
     }
 
-    if (!constellationFoundAndClicked) {
-        hideConstellationInfo();
-    }
-});
+    setupControls() {
+        const latInput = document.getElementById('location-lat');
+        const lonInput = document.getElementById('location-lon');
+        const dateInput = document.getElementById('datetime');
+        const setNowBtn = document.getElementById('btn-set-now');
+        const useLocBtn = document.getElementById('btn-use-location');
+        const searchInput = document.getElementById('search-input');
 
-// Helper function to determine if a point is inside a polygon
-function isPointInPolygon(x, y, polygon) {
-    let inside = false;
-    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-        const xi = polygon[i].x, yi = polygon[i].y;
-        const xj = polygon[j].x, yj = polygon[j].y;
+        this.updateInputs();
 
-        const intersect = ((yi > y) !== (yj > y)) &&
-            (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-        if (intersect) inside = !inside;
-    }
-    return inside;
-}
+        latInput.addEventListener('change', (e) => this.latitude = parseFloat(e.target.value));
+        lonInput.addEventListener('change', (e) => this.longitude = parseFloat(e.target.value));
+        dateInput.addEventListener('change', (e) => this.date = new Date(e.target.value));
 
-// Function to display constellation information
-function showConstellationInfo(constellation) {
-    constellationInfo.innerHTML = `
-        <h2>${constellation.name}</h2>
-        <p>${constellation.mythology}</p>
-    `;
-    constellationInfo.style.display = 'block';
-    constellationInfo.setAttribute('aria-live', 'polite');
-}
+        setNowBtn.addEventListener('click', () => {
+            this.date = new Date();
+            this.updateInputs();
+        });
 
-// Function to hide constellation information
-function hideConstellationInfo() {
-    constellationInfo.style.display = 'none';
-}
-
-// Zoom and pan controls
-let scale = 1;
-let translateX = 0;
-let translateY = 0;
-let isDragging = false;
-let startX, startY;
-
-function updateTransform() {
-    canvas.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
-}
-
-starMap.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    const scaleFactor = Math.sign(e.deltaY) > 0? 0.9: 1.1;
-    scale *= scaleFactor;
-    scale = Math.min(Math.max(scale, 0.5), 2);
-    updateTransform();
-});
-
-starMap.addEventListener('mousedown', (e) => {
-    isDragging = true;
-    startX = e.clientX - translateX;
-    startY = e.clientY - translateY;
-});
-
-starMap.addEventListener('mousemove', (e) => {
-    const rect = canvas.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-
-    // Hover highlighting for constellations
-    let hoveredConstellation = null;
-    for (const constellation of constellations) {
-        const starPoints = constellation.stars.map(starName => {
-            const star = stars.get(starName);
-            if (star) {
-                const { x, y } = convertCoords(star.ra, star.dec);
-                return { x, y };
-            }
-            return null;
-        }).filter(p => p !== null);
-
-        if (starPoints.length >= 3 && isPointInPolygon(mouseX, mouseY, starPoints)) {
-            hoveredConstellation = constellation;
-            break;
-        }
-    }
-
-    // Set a property on the constellation object temporarily for drawing
-    // We need to clear previous hovers first
-    constellations.forEach(c => c.hovered = false);
-    if (hoveredConstellation) {
-        hoveredConstellation.hovered = true;
-        canvas.style.cursor = 'pointer';
-    } else {
-        canvas.style.cursor = isDragging ? 'grabbing' : 'grab';
-    }
-
-    if (!isDragging) return;
-    translateX = e.clientX - startX;
-    translateY = e.clientY - startY;
-    updateTransform();
-});
-
-starMap.addEventListener('mouseup', () => {
-    isDragging = false;
-});
-
-// Navigation buttons container
-const controlsContainer = document.createElement('div');
-controlsContainer.style.position = 'absolute';
-controlsContainer.style.bottom = '20px';
-controlsContainer.style.right = '20px';
-controlsContainer.style.display = 'grid';
-controlsContainer.style.gridTemplateColumns = 'repeat(3, 1fr)';
-controlsContainer.style.gap = '5px';
-controlsContainer.style.zIndex = '20';
-starMap.appendChild(controlsContainer);
-
-const panUpButton = document.createElement('button');
-panUpButton.textContent = '↑';
-panUpButton.style.gridColumn = '2';
-panUpButton.addEventListener('click', () => {
-    translateY += 20;
-    updateTransform();
-});
-controlsContainer.appendChild(panUpButton);
-
-const panLeftButton = document.createElement('button');
-panLeftButton.textContent = '←';
-panLeftButton.style.gridColumn = '1';
-panLeftButton.style.gridRow = '2';
-panLeftButton.addEventListener('click', () => {
-    translateX += 20;
-    updateTransform();
-});
-controlsContainer.appendChild(panLeftButton);
-
-const panDownButton = document.createElement('button');
-panDownButton.textContent = '↓';
-panDownButton.style.gridColumn = '2';
-panDownButton.style.gridRow = '2';
-panDownButton.addEventListener('click', () => {
-    translateY -= 20;
-    updateTransform();
-});
-controlsContainer.appendChild(panDownButton);
-
-const panRightButton = document.createElement('button');
-panRightButton.textContent = '→';
-panRightButton.style.gridColumn = '3';
-panRightButton.style.gridRow = '2';
-panRightButton.addEventListener('click', () => {
-    translateX -= 20;
-    updateTransform();
-});
-controlsContainer.appendChild(panRightButton);
-
-// Zoom controls
-const zoomInButton = document.createElement('button');
-zoomInButton.textContent = '+';
-zoomInButton.style.gridColumn = '1';
-zoomInButton.style.gridRow = '3';
-zoomInButton.addEventListener('click', () => {
-    scale = Math.min(scale * 1.1, 2);
-    updateTransform();
-});
-controlsContainer.appendChild(zoomInButton);
-
-const zoomOutButton = document.createElement('button');
-zoomOutButton.textContent = '-';
-zoomOutButton.style.gridColumn = '3';
-zoomOutButton.style.gridRow = '3';
-zoomOutButton.addEventListener('click', () => {
-    scale = Math.max(scale * 0.9, 0.5);
-    updateTransform();
-});
-controlsContainer.appendChild(zoomOutButton);
-
-// Search functionality
-const searchInput = document.createElement('input');
-searchInput.type = 'text';
-searchInput.placeholder = 'Search for a constellation...';
-searchInput.addEventListener('input', () => {
-    const searchTerm = searchInput.value.toLowerCase();
-
-    // Clear previous highlights from all stars
-    for (const star of stars.values()) {
-        star.highlighted = false;
-    }
-
-    if (searchTerm) {
-        constellations.forEach(constellation => {
-            // Highlight stars of matching constellations
-            if (constellation.name.toLowerCase().includes(searchTerm)) {
-                constellation.stars.forEach(starName => {
-                    const star = stars.get(starName);
-                    if (star) {
-                        star.highlighted = true;
-                    }
+        useLocBtn.addEventListener('click', () => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((pos) => {
+                    this.latitude = pos.coords.latitude;
+                    this.longitude = pos.coords.longitude;
+                    this.updateInputs();
                 });
             }
         });
+
+        // Enhanced Search
+        searchInput.addEventListener('input', (e) => this.handleSearch(e.target.value));
+        searchInput.addEventListener('blur', () => {
+             // Delay hiding to allow clicks
+             setTimeout(() => this.searchResults.style.display = 'none', 200);
+        });
+        searchInput.addEventListener('focus', (e) => this.handleSearch(e.target.value));
+
+
+        this.canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            this.scale *= (e.deltaY > 0 ? 0.9 : 1.1);
+            this.scale = Math.max(0.5, Math.min(this.scale, 5));
+        });
+
+        this.canvas.addEventListener('mousemove', (e) => this.handleHover(e));
+        this.canvas.addEventListener('click', (e) => this.handleClick(e));
     }
-    // The drawStars function will pick up the changes in the next animation frame
+
+    handleSearch(term) {
+        this.searchResults.innerHTML = '';
+        if (!term || term.length < 2) {
+            this.searchResults.style.display = 'none';
+            return;
+        }
+
+        const results = [];
+        const lowerTerm = term.toLowerCase();
+
+        // Search Stars
+        for (const [name, data] of stars) {
+            if (name.toLowerCase().includes(lowerTerm)) {
+                results.push({ type: 'Star', name, data });
+            }
+        }
+        // Search Constellations
+        constellations.forEach(c => {
+            if (c.name.toLowerCase().includes(lowerTerm)) {
+                results.push({ type: 'Constellation', name: c.name, data: c });
+            }
+        });
+
+        if (results.length > 0) {
+            this.searchResults.style.display = 'block';
+            results.slice(0, 10).forEach(res => {
+                const div = document.createElement('div');
+                div.className = 'search-result-item';
+                div.textContent = `${res.name} (${res.type})`;
+                div.addEventListener('click', () => {
+                   this.selectObject(res);
+                });
+                this.searchResults.appendChild(div);
+            });
+        } else {
+            this.searchResults.style.display = 'none';
+        }
+    }
+
+    selectObject(obj) {
+        // Clear highlights
+        stars.forEach(s => s.highlighted = false);
+        constellations.forEach(c => c.highlighted = false);
+
+        if (obj.type === 'Star') {
+            const s = stars.get(obj.name);
+            if (s) s.highlighted = true;
+            this.showInfoPanel(obj.name, s);
+        } else {
+            obj.data.highlighted = true;
+            obj.data.stars.forEach(sName => {
+                const s = stars.get(sName);
+                if (s) s.highlighted = true;
+            });
+            this.showInfoPanel(obj.name, obj.data, true);
+        }
+    }
+
+    updateInputs() {
+        document.getElementById('location-lat').value = this.latitude;
+        document.getElementById('location-lon').value = this.longitude;
+        const d = this.date;
+        const pad = (n) => n < 10 ? '0' + n : n;
+        const str = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        document.getElementById('datetime').value = str;
+    }
+
+    resize() {
+        this.width = this.container.clientWidth;
+        this.height = this.container.clientHeight;
+        this.canvas.width = this.width;
+        this.canvas.height = this.height;
+    }
+
+    project(alt, az) {
+        const zenithDist = 90 - alt;
+        if (zenithDist < 0) return null;
+        const maxRadius = Math.min(this.width, this.height) / 2 * 0.9 * this.scale;
+        const r = (zenithDist / 90) * maxRadius;
+        const angle = Astronomy.degToRad(az - 90);
+        const cx = this.width / 2;
+        const cy = this.height / 2;
+        const x = cx - r * Math.cos(angle);
+        const y = cy + r * Math.sin(angle);
+        return { x, y };
+    }
+
+    draw() {
+        const ctx = this.ctx;
+        ctx.clearRect(0, 0, this.width, this.height);
+
+        const jd = Astronomy.getJulianDate(this.date);
+        const gst = Astronomy.getGST(jd);
+        const lst = Astronomy.getLST(gst, this.longitude);
+
+        const cx = this.width / 2;
+        const cy = this.height / 2;
+        const horizonRadius = Math.min(this.width, this.height) / 2 * 0.9 * this.scale;
+
+        ctx.beginPath();
+        ctx.arc(cx, cy, horizonRadius, 0, Math.PI * 2);
+        ctx.strokeStyle = '#303050';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.fillStyle = '#0b0b15';
+        ctx.fill();
+
+        ctx.fillStyle = '#90caf9';
+        ctx.font = '16px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('N', cx, cy - horizonRadius - 15);
+        ctx.fillText('S', cx, cy + horizonRadius + 15);
+        ctx.fillText('E', cx - horizonRadius - 15, cy);
+        ctx.fillText('W', cx + horizonRadius + 15, cy);
+
+        // Draw background stars
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+        this.backgroundStars.forEach(bg => {
+             const pos = Astronomy.equatorialToHorizontal(bg.ra, bg.dec, this.latitude, lst);
+             if (pos.alt >= 0) {
+                 const xy = this.project(pos.alt, pos.az);
+                 if (xy) {
+                     // Simple faint dot
+                     ctx.fillRect(xy.x, xy.y, 1, 1);
+                 }
+             }
+        });
+
+        this.renderedStars = [];
+
+        for (const [name, data] of stars) {
+            const pos = Astronomy.equatorialToHorizontal(data.ra, data.dec, this.latitude, lst);
+            if (pos.alt >= 0) {
+                const xy = this.project(pos.alt, pos.az);
+                if (xy) {
+                    this.renderedStars.push({ name, ...data, ...xy });
+                }
+            }
+        }
+
+        ctx.strokeStyle = '#444466';
+        ctx.lineWidth = 1;
+        constellations.forEach(constellation => {
+            let drawnLines = false;
+            constellation.lines.forEach(line => {
+                const s1 = this.renderedStars.find(s => s.name === line.from);
+                const s2 = this.renderedStars.find(s => s.name === line.to);
+
+                if (s1 && s2) {
+                    ctx.beginPath();
+                    ctx.moveTo(s1.x, s1.y);
+                    ctx.lineTo(s2.x, s2.y);
+
+                    if (constellation.highlighted) {
+                        ctx.strokeStyle = '#ffd700';
+                        ctx.lineWidth = 2;
+                    } else {
+                        ctx.strokeStyle = '#444466';
+                        ctx.lineWidth = 1;
+                    }
+                    ctx.stroke();
+                    drawnLines = true;
+                }
+            });
+        });
+
+        this.renderedStars.forEach(star => {
+            const mag = star.mag || 4;
+            let r = Math.max(0.5, 3 - mag * 0.5);
+            if (star.highlighted) r *= 1.5;
+
+            ctx.beginPath();
+            ctx.arc(star.x, star.y, r, 0, Math.PI * 2);
+
+            if (star.highlighted) {
+                ctx.fillStyle = '#ffd700';
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = '#ffd700';
+            } else {
+                ctx.fillStyle = '#ffffff';
+                ctx.shadowBlur = 0;
+            }
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            if (mag < 1.5 || star.highlighted) {
+                ctx.fillStyle = '#aaaaaa';
+                ctx.font = '10px Arial';
+                ctx.fillText(star.name, star.x + 5, star.y + 5);
+            }
+        });
+    }
+
+    handleHover(e) {
+        const rect = this.canvas.getBoundingClientRect();
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
+
+        const hit = this.findHit(mx, my);
+        if (hit) {
+            this.canvas.style.cursor = 'pointer';
+            this.showPopup(mx, my, hit);
+        } else {
+            this.canvas.style.cursor = 'default';
+            this.hidePopup();
+        }
+    }
+
+    handleClick(e) {
+        const rect = this.canvas.getBoundingClientRect();
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
+
+        const hit = this.findHit(mx, my);
+        if (hit) {
+            this.selectObject({ type: 'Star', name: hit.name, data: hit }); // Simple selection
+        }
+    }
+
+    findHit(mx, my) {
+        let minDist = 10;
+        let best = null;
+        for (const star of this.renderedStars) {
+            const dist = Math.hypot(star.x - mx, star.y - my);
+            if (dist < minDist) {
+                minDist = dist;
+                best = star;
+            }
+        }
+        return best;
+    }
+
+    showPopup(x, y, star) {
+        this.popup.style.display = 'block';
+        this.popup.style.left = (x + 15) + 'px';
+        this.popup.style.top = (y + 15) + 'px';
+
+        let html = `<strong>${star.name}</strong><br>`;
+        html += `Mag: ${star.mag}<br>`;
+        if(star.constellation) html += `Const: ${star.constellation}<br>`;
+        if(star.type) html += `Type: ${star.type}<br>`;
+        this.popup.innerHTML = html;
+    }
+
+    hidePopup() {
+        this.popup.style.display = 'none';
+    }
+
+    showInfoPanel(name, data, isConstellation = false) {
+        const infoPanel = document.getElementById('constellation-info');
+        let html = `<h2>${name}</h2>`;
+
+        if (isConstellation) {
+             html += `<p><strong>Mythology:</strong> ${data.mythology}</p>`;
+             html += `<p><strong>Stars:</strong> ${data.stars.join(', ')}</p>`;
+        } else {
+            html += `<p><strong>Meaning:</strong> ${data.meaning || 'N/A'}</p>`;
+            html += `<p><strong>Magnitude:</strong> ${data.mag}</p>`;
+            html += `<p><strong>Distance:</strong> ${data.dist || 'Unknown'}</p>`;
+            html += `<p><strong>Type:</strong> ${data.type || 'Unknown'}</p>`;
+            if (data.constellation) {
+                html += `<p><strong>Constellation:</strong> ${data.constellation}</p>`;
+            }
+        }
+        infoPanel.innerHTML = html;
+    }
+
+    startLoop() {
+        const loop = () => {
+            this.draw();
+            requestAnimationFrame(loop);
+        };
+        loop();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    new SkyApp();
 });
-starMap.appendChild(searchInput);
-
-// Accessibility
-constellationInfo.setAttribute('aria-label', 'Constellation Information');
-constellationInfo.setAttribute('role', 'dialog');
-
-// Initial drawing of stars and constellations (animated)
-drawStars();
-// constellations.forEach(drawConstellationLines); // Removed as it's now in drawStars loop
