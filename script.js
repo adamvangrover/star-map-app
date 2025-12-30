@@ -260,15 +260,47 @@ const constellations = [
 
 // Canvas and context
 const canvas = document.createElement('canvas');
-// canvas.width = window.innerWidth; // Defer sizing to resizeCanvas
-// canvas.height = window.innerHeight; // Defer sizing to resizeCanvas
-canvas.style.background = "#000"; // Set canvas background color to black
+canvas.style.position = 'absolute';
+canvas.style.top = '0';
+canvas.style.left = '0';
+canvas.style.zIndex = '10'; // Ensure it is above background but below UI
+canvas.style.background = "transparent"; // Make transparent to see background stars
 starMap.appendChild(canvas);
 const ctx = canvas.getContext('2d');
+
+// Background stars canvas
+const bgCanvas = document.createElement('canvas');
+bgCanvas.style.position = 'absolute';
+bgCanvas.style.top = '0';
+bgCanvas.style.left = '0';
+bgCanvas.style.zIndex = '0'; // Behind everything
+bgCanvas.style.background = "#000";
+starMap.appendChild(bgCanvas);
+const bgCtx = bgCanvas.getContext('2d');
+
+function generateBackgroundStars() {
+    bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+    const numStars = 500;
+    bgCtx.fillStyle = '#FFFFFF';
+    for (let i = 0; i < numStars; i++) {
+        const x = Math.random() * bgCanvas.width;
+        const y = Math.random() * bgCanvas.height;
+        const radius = Math.random() * 0.8;
+        const alpha = Math.random() * 0.5 + 0.1;
+
+        bgCtx.beginPath();
+        bgCtx.arc(x, y, radius, 0, Math.PI * 2);
+        bgCtx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+        bgCtx.fill();
+    }
+}
 
 function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    bgCanvas.width = window.innerWidth;
+    bgCanvas.height = window.innerHeight;
+    generateBackgroundStars();
     // Redrawing will be handled by the drawStars animation loop
 }
 window.addEventListener('resize', resizeCanvas, false);
@@ -285,6 +317,7 @@ function convertCoords(ra, dec) {
 // Function to draw stars on the canvas (animated)
 function drawStars() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const time = Date.now() * 0.001;
 
     for (const [starName, star] of stars) {
         const { x, y } = convertCoords(star.ra, star.dec);
@@ -292,15 +325,19 @@ function drawStars() {
         ctx.beginPath();
         const baseRadius = Math.max(1, (2 - star.mag) * 2);
 
+        // Twinkling effect
+        const randomSeed = star.ra * star.dec; // simple seed based on position
+        const twinkle = Math.sin(time * 2 + randomSeed) * 0.3 + 0.7; // oscillates between 0.4 and 1.0
+
         if (star.highlighted) {
             ctx.arc(x, y, baseRadius + 2, 0, 2 * Math.PI); // Larger radius for highlighted
-            ctx.fillStyle = '#FFD700'; // Gold
+            ctx.fillStyle = `rgba(255, 215, 0, ${twinkle})`; // Gold with alpha
             ctx.shadowBlur = 15;
             ctx.shadowColor = "#FFD700";
         } else {
             ctx.arc(x, y, baseRadius, 0, 2 * Math.PI);
-            ctx.fillStyle = '#FFFFCC';
-            ctx.shadowBlur = 8;
+            ctx.fillStyle = `rgba(255, 255, 204, ${twinkle})`;
+            ctx.shadowBlur = 8 * twinkle;
             ctx.shadowColor = "#FFF";
         }
         ctx.fill();
@@ -309,8 +346,6 @@ function drawStars() {
 
     // Draw constellation lines in the same animation frame
     constellations.forEach(constellation => {
-        // Future enhancement: Could check if constellation is highlighted to change line style
-        // For now, all lines are drawn with default style.
         drawConstellationLines(constellation);
     });
 
@@ -339,11 +374,18 @@ function drawConstellationLines(constellation) {
     if (isAnyStarInConstellationHighlighted) {
         ctx.strokeStyle = '#FFD700'; // Gold for highlighted constellation lines
         ctx.lineWidth = 1.5;
+    } else if (constellation.hovered) {
+        ctx.strokeStyle = '#00BFFF'; // Deep Sky Blue for hovered
+        ctx.lineWidth = 2;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = '#00BFFF';
     } else {
         ctx.strokeStyle = '#ccc';
         ctx.lineWidth = 1;
     }
     ctx.stroke();
+    // Reset shadow
+    ctx.shadowBlur = 0;
 }
 
 // Event listeners for constellation clicks
@@ -381,7 +423,16 @@ canvas.addEventListener('click', (e) => {
 
 // Helper function to determine if a point is inside a polygon
 function isPointInPolygon(x, y, polygon) {
-    // (Implementation of point-in-polygon algorithm - remains unchanged)
+    let inside = false;
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+        const xi = polygon[i].x, yi = polygon[i].y;
+        const xj = polygon[j].x, yj = polygon[j].y;
+
+        const intersect = ((yi > y) !== (yj > y)) &&
+            (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        if (intersect) inside = !inside;
+    }
+    return inside;
 }
 
 // Function to display constellation information
@@ -425,6 +476,38 @@ starMap.addEventListener('mousedown', (e) => {
 });
 
 starMap.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    // Hover highlighting for constellations
+    let hoveredConstellation = null;
+    for (const constellation of constellations) {
+        const starPoints = constellation.stars.map(starName => {
+            const star = stars.get(starName);
+            if (star) {
+                const { x, y } = convertCoords(star.ra, star.dec);
+                return { x, y };
+            }
+            return null;
+        }).filter(p => p !== null);
+
+        if (starPoints.length >= 3 && isPointInPolygon(mouseX, mouseY, starPoints)) {
+            hoveredConstellation = constellation;
+            break;
+        }
+    }
+
+    // Set a property on the constellation object temporarily for drawing
+    // We need to clear previous hovers first
+    constellations.forEach(c => c.hovered = false);
+    if (hoveredConstellation) {
+        hoveredConstellation.hovered = true;
+        canvas.style.cursor = 'pointer';
+    } else {
+        canvas.style.cursor = isDragging ? 'grabbing' : 'grab';
+    }
+
     if (!isDragging) return;
     translateX = e.clientX - startX;
     translateY = e.clientY - startY;
@@ -435,38 +518,76 @@ starMap.addEventListener('mouseup', () => {
     isDragging = false;
 });
 
-// Navigation buttons
-const panLeftButton = document.createElement('button');
-panLeftButton.textContent = '←';
-panLeftButton.addEventListener('click', () => {
-    translateX += 20;
-    updateTransform();
-});
-starMap.appendChild(panLeftButton);
-
-const panRightButton = document.createElement('button');
-panRightButton.textContent = '→';
-panRightButton.addEventListener('click', () => {
-    translateX -= 20;
-    updateTransform();
-});
-starMap.appendChild(panRightButton);
+// Navigation buttons container
+const controlsContainer = document.createElement('div');
+controlsContainer.style.position = 'absolute';
+controlsContainer.style.bottom = '20px';
+controlsContainer.style.right = '20px';
+controlsContainer.style.display = 'grid';
+controlsContainer.style.gridTemplateColumns = 'repeat(3, 1fr)';
+controlsContainer.style.gap = '5px';
+controlsContainer.style.zIndex = '20';
+starMap.appendChild(controlsContainer);
 
 const panUpButton = document.createElement('button');
 panUpButton.textContent = '↑';
+panUpButton.style.gridColumn = '2';
 panUpButton.addEventListener('click', () => {
     translateY += 20;
     updateTransform();
 });
-starMap.appendChild(panUpButton);
+controlsContainer.appendChild(panUpButton);
+
+const panLeftButton = document.createElement('button');
+panLeftButton.textContent = '←';
+panLeftButton.style.gridColumn = '1';
+panLeftButton.style.gridRow = '2';
+panLeftButton.addEventListener('click', () => {
+    translateX += 20;
+    updateTransform();
+});
+controlsContainer.appendChild(panLeftButton);
 
 const panDownButton = document.createElement('button');
 panDownButton.textContent = '↓';
+panDownButton.style.gridColumn = '2';
+panDownButton.style.gridRow = '2';
 panDownButton.addEventListener('click', () => {
     translateY -= 20;
     updateTransform();
 });
-starMap.appendChild(panDownButton);
+controlsContainer.appendChild(panDownButton);
+
+const panRightButton = document.createElement('button');
+panRightButton.textContent = '→';
+panRightButton.style.gridColumn = '3';
+panRightButton.style.gridRow = '2';
+panRightButton.addEventListener('click', () => {
+    translateX -= 20;
+    updateTransform();
+});
+controlsContainer.appendChild(panRightButton);
+
+// Zoom controls
+const zoomInButton = document.createElement('button');
+zoomInButton.textContent = '+';
+zoomInButton.style.gridColumn = '1';
+zoomInButton.style.gridRow = '3';
+zoomInButton.addEventListener('click', () => {
+    scale = Math.min(scale * 1.1, 2);
+    updateTransform();
+});
+controlsContainer.appendChild(zoomInButton);
+
+const zoomOutButton = document.createElement('button');
+zoomOutButton.textContent = '-';
+zoomOutButton.style.gridColumn = '3';
+zoomOutButton.style.gridRow = '3';
+zoomOutButton.addEventListener('click', () => {
+    scale = Math.max(scale * 0.9, 0.5);
+    updateTransform();
+});
+controlsContainer.appendChild(zoomOutButton);
 
 // Search functionality
 const searchInput = document.createElement('input');
