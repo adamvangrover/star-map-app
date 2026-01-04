@@ -52,6 +52,32 @@ body {
     box-sizing: border-box;
 }
 
+/* Mode Toggle */
+.mode-toggle {
+    display: flex;
+    gap: 5px;
+}
+.mode-toggle button {
+    flex: 1;
+    padding: 8px;
+    font-size: 0.9em;
+    background-color: #252540;
+    opacity: 0.7;
+}
+.mode-toggle button.active {
+    background-color: #304ffe;
+    opacity: 1;
+}
+
+.instruction {
+    font-size: 0.85em;
+    color: #aaa;
+    background: #252540;
+    padding: 8px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
 /* Search Results Dropdown */
 #search-results {
     display: none;
