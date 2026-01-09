@@ -500,23 +500,43 @@ class SkyApp {
 
         // Initialize Background Stars (Procedural Universe)
         // We want a dense field for "traversal" feel.
-        const bgCount = 15000;
+        const bgCount = 50000;
         this.backgroundStars = [];
         const types = Object.keys(SpectralColors).filter(k => k.length === 1); // OBAFGKM
 
+        // Generate Milky Way Disk approximation + Halo
         for (let i = 0; i < bgCount; i++) {
-            // Random direction
-            const ra = Math.random() * 360;
-            const dec = Math.asin(2 * Math.random() - 1) * (180 / Math.PI);
+            // Mix of Disk and Sphere for better visual
+            const isDisk = Math.random() > 0.2;
+            let x, y, z;
 
-            // Logarithmic distribution for distance to have more stars nearby but some very far
-            // Range: 10 ly to 20,000 ly
-            const dist = 10 * Math.pow(2000, Math.random());
+            if (isDisk) {
+                // Disk
+                const rNorm = Math.random();
+                const r = 50000 * rNorm * rNorm; // Bias to center
+                const theta = Math.random() * Math.PI * 2;
+                const h = (Math.random() - 0.5) * 1000;
+                // Galactic center coords
+                const gx = r * Math.cos(theta);
+                const gy = r * Math.sin(theta);
+                const gz = h;
+                // Shift to Earth (Sun is approx 26k ly from center)
+                x = gx + 26000;
+                y = gy;
+                z = gz;
+            } else {
+                // Halo / Sphere
+                const dist = 10 * Math.pow(5000, Math.random());
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos(2 * Math.random() - 1);
+                x = dist * Math.sin(phi) * Math.cos(theta);
+                y = dist * Math.sin(phi) * Math.sin(theta);
+                z = dist * Math.cos(phi);
+            }
 
-            const mag = 2 + Math.random() * 10;
-            const pos3d = Astronomy.sphericalToCartesian(ra, dec, dist);
+            const dist = Math.sqrt(x*x + y*y + z*z);
 
-            // Assign random spectral type weighted towards cooler stars (Main Sequence distribution approx)
+            // Assign random spectral type
             const r = Math.random();
             let type = 'M';
             if (r > 0.99) type = 'O';
@@ -527,21 +547,57 @@ class SkyApp {
             else if (r > 0.50) type = 'K';
 
             this.backgroundStars.push({
-                ra, dec, mag, dist, pos3d,
+                pos3d: {x,y,z},
+                mag: 2 + Math.random() * 10,
+                dist,
                 colorCode: type,
                 color: SpectralColors[type],
                 isProcedural: true
             });
         }
 
-        // Initialize DSOs 3D positions
-        DSOs.forEach(dso => {
+        // Add procedural distant galaxies (Universe Scale)
+        for (let i = 0; i < 1000; i++) {
+             const dist = 200000 + Math.random() * 10000000; // 200k to 10M ly
+             const theta = Math.random() * Math.PI * 2;
+             const phi = Math.acos(2 * Math.random() - 1);
+             const x = dist * Math.sin(phi) * Math.cos(theta);
+             const y = dist * Math.sin(phi) * Math.sin(theta);
+             const z = dist * Math.cos(phi);
+
+             this.backgroundStars.push({
+                 pos3d: {x,y,z},
+                 dist,
+                 color: '#aaddff',
+                 isGalaxy: true,
+                 isProcedural: true,
+                 mag: 5
+             });
+        }
+
+        // Initialize DSOs 3D positions and clone for Galaxy View interaction
+        this.galaxyDSOs = DSOs.map(dso => {
              let dist = 10000;
              const match = dso.dist.match(/([\d\.,]+)/);
              if (match) dist = parseFloat(match[1].replace(/,/g, ''));
              if (dso.dist.includes('million')) dist *= 1000000;
+
+             const coords = Astronomy.sphericalToCartesian(dso.ra * 15, dso.dec, dist);
+             const pos3d = new Vector3(coords.x, coords.y, coords.z);
+
+             // Random Velocity for "Navigating" effect (slow drift)
+             const vel = new Vector3(
+                 (Math.random()-0.5) * 5,
+                 (Math.random()-0.5) * 5,
+                 (Math.random()-0.5) * 5
+             );
+
+             // Update original DSOs with pos3d for Earth View too
              dso.distanceLy = dist;
-             dso.pos3d = Astronomy.sphericalToCartesian(dso.ra * 15, dso.dec, dist);
+             dso.pos3d = coords; // Keep as plain object for others if needed, or use Vector3 consistently.
+             // Currently Earth View uses simple projection which expects {x,y,z}, works with both.
+
+             return { ...dso, distanceLy: dist, pos3d, vel };
         });
     }
 
@@ -625,8 +681,8 @@ class SkyApp {
                     setMode('GALAXY');
                     const target = new Vector3(s.pos3d.x, s.pos3d.y, s.pos3d.z);
                     const dir = target.normalize();
-                    // Go to 2 ly away (or farther if it's a big DSO)
-                    const standoffDist = s.distanceLy > 100000 ? 50000 : 2;
+                    // Go to 0.05 ly away for stars to see orbits, or farther if it's a big DSO
+                    const standoffDist = s.distanceLy > 100000 ? 50000 : 0.05;
                     const standOff = target.sub(dir.scale(standoffDist));
 
                     this.animateCameraTo(standOff, target);
@@ -851,18 +907,28 @@ class SkyApp {
     }
 
     project3D(pos3d) {
-        const rel = pos3d.sub(this.camera.pos);
+        // Handle if pos3d is a plain object {x,y,z} or Vector3
+        let px, py, pz;
+        if (pos3d instanceof Vector3) {
+            px = pos3d.x; py = pos3d.y; pz = pos3d.z;
+        } else {
+            px = pos3d.x; py = pos3d.y; pz = pos3d.z;
+        }
+
+        const dx = px - this.camera.pos.x;
+        const dy = py - this.camera.pos.y;
+        const dz = pz - this.camera.pos.z;
 
         const f = this.getCameraDirection();
         const r = this.getCameraRight();
         const u = this.getCameraUp();
 
-        // Project onto basis
-        const z = rel.dot(f); // Depth
+        // Project onto basis manually to avoid vector allocation in tight loops
+        const z = dx*f.x + dy*f.y + dz*f.z;
         if (z <= 0) return null; // Behind camera
 
-        const x = rel.dot(r);
-        const y = rel.dot(u);
+        const x = dx*r.x + dy*r.y + dz*r.z;
+        const y = dx*u.x + dy*u.y + dz*u.z;
 
         // Perspective projection
         // FOV 60 deg -> tan(30) = 0.577
@@ -871,7 +937,7 @@ class SkyApp {
         const sx = (x / z) * scale + this.width / 2;
         const sy = -(y / z) * scale + this.height / 2; // Invert Y for screen
 
-        return { x: sx, y: sy, z: z, dist: Math.sqrt(rel.dot(rel)) };
+        return { x: sx, y: sy, z: z, dist: Math.sqrt(dx*dx + dy*dy + dz*dz) };
     }
 
     handleInputMove(e) {
@@ -939,6 +1005,17 @@ class SkyApp {
         );
 
         this.camera.pos = this.camera.pos.add(this.camera.vel);
+
+        // Update Galaxy DSOs positions (Galaxies navigating)
+        if (this.galaxyDSOs) {
+            this.galaxyDSOs.forEach(dso => {
+                if (dso.vel) {
+                     // Scale velocity by time? Currently just per frame.
+                     // Galaxies move very slowly in reality, but for effect we make them drift.
+                     dso.pos3d = dso.pos3d.add(dso.vel.scale(0.01));
+                }
+            });
+        }
 
         // Update HUD
         const p = this.camera.pos;
@@ -1095,64 +1172,107 @@ class SkyApp {
     }
 
     drawGalaxyView(ctx) {
+        this.tick = (this.tick || 0) + 1;
         this.renderedStars = [];
 
         // Draw a tiny crosshair to verify rendering (center)
         ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
         ctx.fillRect(this.width/2 - 2, this.height/2 - 2, 4, 4);
 
-        // Helper to draw a "Sun" (Close up star)
-        const drawSun = (x, y, r, color, glowColor) => {
-            const grad = ctx.createRadialGradient(x, y, r * 0.1, x, y, r);
+        // Advanced Sun Renderer
+        const drawSun = (x, y, r, color, glowColor, seed = 0) => {
+            // Base Glow
+            const grad = ctx.createRadialGradient(x, y, r * 0.2, x, y, r * 1.5);
             grad.addColorStop(0, '#ffffff'); // Core
-            grad.addColorStop(0.1, color);   // Surface
-            grad.addColorStop(0.4, glowColor); // Corona
+            grad.addColorStop(0.2, color);   // Surface
+            grad.addColorStop(0.5, glowColor); // Corona
             grad.addColorStop(1, 'rgba(0,0,0,0)'); // Fade
 
             ctx.fillStyle = grad;
             ctx.beginPath();
-            ctx.arc(x, y, r, 0, Math.PI * 2);
+            ctx.arc(x, y, r * 1.5, 0, Math.PI * 2);
             ctx.fill();
+
+            // "Flames" / Surface animation
+            // We simulate this by drawing rotated noise-like polygons
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.globalCompositeOperation = 'lighter';
+
+            const count = 3;
+            for(let i=0; i<count; i++) {
+                ctx.rotate(this.tick * 0.005 * (i+1) + seed);
+                ctx.fillStyle = glowColor;
+                ctx.globalAlpha = 0.3;
+                ctx.beginPath();
+                const steps = 12;
+                for(let j=0; j<=steps; j++) {
+                    const theta = (j/steps) * Math.PI * 2;
+                    // Wobbly radius
+                    const rad = r * (0.8 + 0.2 * Math.sin(theta * 5 + this.tick * 0.1 + i));
+                    ctx.lineTo(rad * Math.cos(theta), rad * Math.sin(theta));
+                }
+                ctx.fill();
+            }
+            ctx.restore();
+            ctx.globalCompositeOperation = 'source-over'; // Reset
+            ctx.globalAlpha = 1.0;
         };
 
         // 1. Draw Background/Procedural Stars first (Furthest)
 
+        // Optimization: Batch fillRects by color could be faster, but simply switching to fillRect helps.
         this.backgroundStars.forEach(bg => {
             const proj = this.project3D(bg.pos3d);
             if (!proj) return;
 
-            // Distance culling:
-            // We want stars to be visible.
-
-            // Calculate size and alpha
-            let r = Math.max(1.0, (2000 / proj.dist));
-
-            // Fix: Alpha should not drop to near zero for distant stars if we want a dense field.
-            // Adjust falloff to be gentler.
-            let alpha = Math.min(1, 5000000 / (proj.dist * proj.dist));
-            // Clamp alpha to be at least visible for "background" feel
-            if (alpha < 0.2) alpha = 0.2;
-
-            // If we are VERY close to a procedural star
-            if (proj.dist < 5) {
-                 // Close up
-                 const sunRadius = (100 / proj.dist); // Scale up
-                 drawSun(proj.x, proj.y, sunRadius, bg.color, bg.color);
-                 this.renderedStars.push({ name: 'Unknown Star', ...bg, ...proj, isStar: true, isProcedural: true });
+            if (bg.isGalaxy) {
+                 // Draw as fuzzy dot
+                 ctx.fillStyle = bg.color;
+                 ctx.globalAlpha = 0.8;
+                 ctx.fillRect(proj.x, proj.y, 2, 2);
+                 ctx.globalAlpha = 1.0;
                  return;
             }
 
-            ctx.fillStyle = bg.color || '#fff';
-            ctx.globalAlpha = alpha;
-            ctx.beginPath();
-            ctx.arc(proj.x, proj.y, r, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.globalAlpha = 1.0;
+            // Normal star
+            let alpha = Math.min(1, 1000 / proj.dist);
+            if (alpha < 0.1) alpha = 0.1;
+
+            // If we are VERY close to a procedural star (< 1 ly)
+            if (proj.dist < 1) {
+                 const sunRadius = Math.max(50, 1000 / proj.dist);
+                 drawSun(proj.x, proj.y, sunRadius, bg.color, bg.color, bg.pos3d.x);
+                 this.renderedStars.push({ name: 'Unknown Star', ...bg, ...proj, isStar: true, isProcedural: true });
+
+                 // Draw Procedural Orbits if extremely close
+                 if (proj.dist < 0.1) {
+                     this.drawProceduralSystem(ctx, proj.x, proj.y, proj.dist, bg.pos3d.x);
+                 }
+                 return;
+            }
+
+            // Optimization: Use fillRect for small stars
+            const size = (2000 / proj.dist);
+            if (size < 2) {
+                ctx.fillStyle = bg.color;
+                ctx.globalAlpha = alpha;
+                ctx.fillRect(proj.x, proj.y, Math.max(1, size), Math.max(1, size));
+                ctx.globalAlpha = 1.0;
+            } else {
+                ctx.fillStyle = bg.color;
+                ctx.globalAlpha = alpha;
+                ctx.beginPath();
+                ctx.arc(proj.x, proj.y, size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalAlpha = 1.0;
+            }
         });
 
 
-        // 2. Draw DSOs (Galaxies)
-        DSOs.forEach(dso => {
+        // 2. Draw DSOs (Galaxies) - Use this.galaxyDSOs if available (Galaxy Mode), else static DSOs (Earth Mode uses DSOs global)
+        const targetDSOs = this.galaxyDSOs || DSOs;
+        targetDSOs.forEach(dso => {
             if (dso.pos3d) {
                 const proj = this.project3D(dso.pos3d);
                 if (proj) {
@@ -1195,6 +1315,11 @@ class SkyApp {
                      } else {
                          // Normal star draw
                      }
+
+                     // Draw Procedural Orbits if extremely close (even for named stars)
+                     if (proj.dist < 0.1) {
+                        this.drawProceduralSystem(ctx, proj.x, proj.y, proj.dist, data.ra);
+                     }
                 }
 
                 this.renderedStars.push({ name, ...data, ...proj, isStar: true, color });
@@ -1202,6 +1327,60 @@ class SkyApp {
         }
 
         this.drawConstellationsAndStars(ctx);
+    }
+
+    drawProceduralSystem(ctx, sx, sy, distToStar, seed) {
+         // distToStar is distance from camera to star in ly.
+         // If we are < 0.1 ly, we are inside the system.
+         // Draw orbits.
+
+         // Use a consistent seeded random
+         const random = (s) => {
+             const x = Math.sin(s) * 10000;
+             return x - Math.floor(x);
+         };
+
+         ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+         ctx.lineWidth = 1;
+
+         // Generate deterministic planets based on seed
+         const numPlanets = 3 + Math.floor(random(seed) * 5);
+
+         for(let i=0; i<numPlanets; i++) {
+             // Fake orbit radius in Ly (very small)
+             // We scale it up for visualization so it's visible when "inside" the system
+             // Let's say the system view spans 0.0001 Ly.
+             // We need to project the 3D orbit, but here we cheat and draw 2D ellipses facing camera
+             // because full 3D orbital mechanics + projection in this simple engine is complex.
+             // However, to make it "navigate interactively", we should try to project if possible.
+             // But for now, 2D overlay centered on star is "good enough" for the requested effect.
+
+             const orbitRadiusScreen = (this.height / 3) * ((i+1) / numPlanets) * (0.01 / distToStar);
+
+             if (orbitRadiusScreen > this.width * 2) continue;
+             if (orbitRadiusScreen < 10) continue;
+
+             ctx.beginPath();
+             ctx.ellipse(sx, sy, orbitRadiusScreen, orbitRadiusScreen * 0.4, this.tick * 0.001, 0, Math.PI*2);
+             ctx.stroke();
+
+             // Draw Planet
+             const speed = 0.005 / (i+1);
+             const angle = this.tick * speed + random(seed+i) * 10;
+             // Ellipse parametric
+             const ex = orbitRadiusScreen * Math.cos(angle);
+             const ey = orbitRadiusScreen * 0.4 * Math.sin(angle);
+
+             // Rotate ellipse point by same rotation as ellipse
+             const rot = this.tick * 0.001;
+             const px = sx + ex * Math.cos(rot) - ey * Math.sin(rot);
+             const py = sy + ex * Math.sin(rot) + ey * Math.cos(rot);
+
+             ctx.fillStyle = i % 2 === 0 ? '#ffccaa' : '#aaccff';
+             ctx.beginPath();
+             ctx.arc(px, py, 4 + (100/distToStar)*0.1, 0, Math.PI*2);
+             ctx.fill();
+         }
     }
 
     drawConstellationsAndStars(ctx) {
@@ -1394,10 +1573,6 @@ class SkyApp {
             }
             if (data.constellation) {
                 html += `<p><strong>Constellation:</strong> ${data.constellation}</p>`;
-            }
-            if (data.distanceLy) {
-                const parsecs = (data.distanceLy / 3.26).toFixed(1);
-                html += `<p><strong>Distance:</strong> ${data.distanceLy.toFixed(1)} ly (${parsecs} pc)</p>`;
             }
         }
         infoPanel.innerHTML = html;
