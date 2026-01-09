@@ -44,9 +44,13 @@
 
             <!-- Galaxy Controls (Hidden by default) -->
             <div id="galaxy-controls" style="display: none;">
-                <p class="instruction">Use <strong>WASD</strong> to fly, <strong>Mouse</strong> to look. <br>Click a star to travel.</p>
+                <p class="instruction">
+                    <strong>WASD</strong>: Move | <strong>Space/C</strong>: Up/Down<br>
+                    <strong>Shift</strong>: Sprint (10x) | <strong>Ctrl</strong>: Warp (100x)<br>
+                    <strong>Mouse</strong>: Look | <strong>Click</strong>: Travel
+                </p>
                 <div class="control-group">
-                    <label for="fly-speed">Flight Speed (ly/s):</label>
+                    <label for="fly-speed">Base Speed (ly/s):</label>
                     <input type="range" id="fly-speed" min="0.1" max="50" step="0.1" value="1">
                     <span id="speed-val">1.0</span>
                 </div>
