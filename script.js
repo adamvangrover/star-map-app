@@ -442,9 +442,12 @@ class SkyApp {
             vel: new Vector3(0, 0, 0),
             yaw: 0, // Radians, rotation around Z (Azimuth)
             pitch: 0, // Radians, Up/Down
+            roll: 0, // Radians, banking
             fov: 60, // Degrees
             baseSpeed: 1.0, // light years per tick/sec
+            warpFactor: 0, // 0 to 1, visual effect intensity
         };
+        this.lastYaw = 0;
         this.keys = {};
         this.isAnimating = false; // Flag to disable physics during animation
 
@@ -623,7 +626,7 @@ class SkyApp {
         this.updateInputs();
 
         // Mode Switching
-        const setMode = (m) => {
+        const setModeUI = (m) => {
             this.mode = m;
             if (m === 'EARTH') {
                 document.getElementById('earth-controls').style.display = 'block';
@@ -640,8 +643,44 @@ class SkyApp {
             }
         };
 
-        btnEarth.addEventListener('click', () => setMode('EARTH'));
-        btnGalaxy.addEventListener('click', () => setMode('GALAXY'));
+        // Transition Logic
+        this.transitionToGalaxy = () => {
+             if (this.mode === 'GALAXY') return;
+
+             // 1. Switch UI immediately or fade? Let's switch to Galaxy Mode
+             // But set camera to look at Earth from close up
+             setModeUI('GALAXY');
+
+             // Start Position: 20 ly away, looking at Earth (0,0,0)
+             this.camera.pos = new Vector3(0, -20, 10);
+             this.camera.yaw = Math.PI / 2; // Look at +Y? No, if pos is -Y, looking +Y is towards Earth.
+             // Forward vector from (0, -20, 10) to (0,0,0) is (0, 20, -10).
+             // Normalize: (0, 0.89, -0.44).
+             // asin(-0.44) = pitch
+             this.camera.pitch = Math.asin(-0.44);
+             // atan2(0.89, 0) = PI/2 (90 deg) = Yaw. Correct.
+             this.camera.yaw = Math.PI / 2;
+
+             this.camera.vel = new Vector3(0,0,0);
+
+             // Animate "Launch" - Move backwards quickly
+             const target = new Vector3(0, -1000, 500);
+             this.animateCameraTo(target, new Vector3(0,0,0));
+        };
+
+        this.transitionToEarth = () => {
+             if (this.mode === 'EARTH') return;
+
+             // Fly to Earth
+             const earthPos = new Vector3(0,0,0);
+             // Animate to Earth, then switch UI
+             this.animateCameraTo(earthPos, null, () => {
+                 setModeUI('EARTH');
+             });
+        };
+
+        btnEarth.addEventListener('click', () => this.transitionToEarth());
+        btnGalaxy.addEventListener('click', () => this.transitionToGalaxy());
 
         // Earth Inputs
         latInput.addEventListener('change', (e) => this.latitude = parseFloat(e.target.value));
@@ -678,7 +717,7 @@ class SkyApp {
                 // If it's a star or DSO
                 const s = this.selectedObject.data;
                 if (s && s.pos3d) {
-                    setMode('GALAXY');
+                    if (this.mode === 'EARTH') setModeUI('GALAXY');
                     const target = new Vector3(s.pos3d.x, s.pos3d.y, s.pos3d.z);
                     const dir = target.normalize();
                     // Go to 0.05 ly away for stars to see orbits, or farther if it's a big DSO
@@ -719,7 +758,7 @@ class SkyApp {
         window.addEventListener('keyup', (e) => this.keys[e.code] = false);
     }
 
-    animateCameraTo(targetPos, lookAtPos = null) {
+    animateCameraTo(targetPos, lookAtPos = null, onComplete = null) {
         this.isAnimating = true; // Disable physics
 
         const startPos = this.camera.pos;
@@ -730,10 +769,6 @@ class SkyApp {
         let endPitch = startPitch;
 
         if (lookAtPos) {
-            const delta = lookAtPos.sub(targetPos); // Look from target? No, look AT target from current
-            // If we are at 'targetPos' (standoff), looking at 'lookAtPos' (object center).
-            // Actually, we are animating camera TO targetPos.
-            // And we want to look AT lookAtPos.
             // Vector from New Camera Pos (targetPos) to Object (lookAtPos)
             const forward = lookAtPos.sub(targetPos).normalize();
 
@@ -758,6 +793,14 @@ class SkyApp {
                 startPos.z + (targetPos.z - startPos.z) * ease
             );
 
+            // Warp Effect Intensity (Peak at 0.5)
+            // 0 -> 1 -> 0
+            if (progress < 0.5) {
+                this.camera.warpFactor = progress * 2;
+            } else {
+                this.camera.warpFactor = (1 - progress) * 2;
+            }
+
             // Interpolate angles properly (shortest path logic omitted for brevity, usually small change)
             this.camera.yaw = startYaw + (endYaw - startYaw) * ease;
             this.camera.pitch = startPitch + (endPitch - startPitch) * ease;
@@ -772,8 +815,10 @@ class SkyApp {
                 requestAnimationFrame(animate);
             } else {
                 this.isAnimating = false; // Re-enable physics
+                this.camera.warpFactor = 0; // Reset warp
                 this.camera.vel = new Vector3(0,0,0); // Stop momentum
                 this.updatePhysics(); // Update HUD immediately
+                if (onComplete) onComplete();
             }
         };
         requestAnimationFrame(animate);
@@ -893,11 +938,27 @@ class SkyApp {
         // Forward
         const f = this.getCameraDirection();
         // Up (Global Z)
-        const u = new Vector3(0,0,1);
+        let u = new Vector3(0,0,1);
         // Right = f x u
         // If f is vertical (0,0,1), this is singular.
-        if (Math.abs(f.z) > 0.99) return new Vector3(1,0,0); // Hack
-        return f.cross(u).normalize();
+        if (Math.abs(f.z) > 0.99) u = new Vector3(1,0,0);
+
+        const r = f.cross(u).normalize();
+
+        // Apply Roll
+        if (this.camera.roll !== 0) {
+            const cos = Math.cos(this.camera.roll);
+            const sin = Math.sin(this.camera.roll);
+            const up_base = r.cross(f); // The 'up' vector before roll
+
+            // Rotate r around f
+            return new Vector3(
+                r.x * cos + up_base.x * sin,
+                r.y * cos + up_base.y * sin,
+                r.z * cos + up_base.z * sin
+            );
+        }
+        return r;
     }
 
     getCameraUp() {
@@ -1005,6 +1066,22 @@ class SkyApp {
         );
 
         this.camera.pos = this.camera.pos.add(this.camera.vel);
+
+        // Banking/Roll Physics
+        // Calculate Yaw Delta
+        const yawDelta = this.camera.yaw - this.lastYaw;
+        this.lastYaw = this.camera.yaw;
+
+        // Target Roll depends on yaw change (banking into turn)
+        // Invert sign depending on desired feel (usually roll right for right turn?)
+        // If I turn right (yaw decreases? or increases?), I bank right.
+        // Yaw increases CCW (left). So if yaw increases, bank left (roll > 0?)
+        // Let's test: Yaw increase -> Roll positive.
+        const targetRoll = -yawDelta * 30.0; // Scale factor
+
+        // Smoothly interpolate roll
+        this.camera.roll += (targetRoll - this.camera.roll) * 0.1;
+
 
         // Update Galaxy DSOs positions (Galaxies navigating)
         if (this.galaxyDSOs) {
@@ -1221,7 +1298,12 @@ class SkyApp {
 
         // 1. Draw Background/Procedural Stars first (Furthest)
 
-        // Optimization: Batch fillRects by color could be faster, but simply switching to fillRect helps.
+        // Calculate Warp Intensity
+        const speed = this.camera.vel.length();
+        const warpIntensity = this.camera.warpFactor + Math.min(speed, 5.0) * 0.05;
+        const cx = this.width / 2;
+        const cy = this.height / 2;
+
         this.backgroundStars.forEach(bg => {
             const proj = this.project3D(bg.pos3d);
             if (!proj) return;
@@ -1254,19 +1336,44 @@ class SkyApp {
 
             // Optimization: Use fillRect for small stars
             const size = (2000 / proj.dist);
-            if (size < 2) {
-                ctx.fillStyle = bg.color;
-                ctx.globalAlpha = alpha;
-                ctx.fillRect(proj.x, proj.y, Math.max(1, size), Math.max(1, size));
-                ctx.globalAlpha = 1.0;
+            ctx.fillStyle = bg.color;
+            ctx.globalAlpha = alpha;
+
+            if (warpIntensity > 0.05) {
+                // Draw Streak
+                // Vector from center
+                const vx = proj.x - cx;
+                const vy = proj.y - cy;
+                const distFromCenter = Math.sqrt(vx*vx + vy*vy);
+
+                // Scale streak by distance from center (perspective warp)
+                // and warpIntensity
+                const streakLen = Math.min(distFromCenter * warpIntensity, 200);
+
+                if (streakLen > 2) {
+                    ctx.beginPath();
+                    ctx.moveTo(proj.x, proj.y);
+                    // Draw inwards? No, moving forward stars go OUT.
+                    // So tail is inwards.
+                    const tailX = proj.x - (vx / distFromCenter) * streakLen;
+                    const tailY = proj.y - (vy / distFromCenter) * streakLen;
+                    ctx.lineTo(tailX, tailY);
+                    ctx.lineWidth = Math.max(1, size);
+                    ctx.strokeStyle = bg.color;
+                    ctx.stroke();
+                } else {
+                     ctx.fillRect(proj.x, proj.y, Math.max(1, size), Math.max(1, size));
+                }
             } else {
-                ctx.fillStyle = bg.color;
-                ctx.globalAlpha = alpha;
-                ctx.beginPath();
-                ctx.arc(proj.x, proj.y, size, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.globalAlpha = 1.0;
+                if (size < 2) {
+                    ctx.fillRect(proj.x, proj.y, Math.max(1, size), Math.max(1, size));
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(proj.x, proj.y, size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
             }
+            ctx.globalAlpha = 1.0;
         });
 
 
