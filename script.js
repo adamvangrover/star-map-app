@@ -129,13 +129,17 @@ addStar('Meissa', 5.58, 9.9, 3.39, { constellation: 'Orion', dist: '1100 ly' });
 // Cassiopeia: Ruchbah
 addStar('Ruchbah', 1.43, 60.2, 2.66, { constellation: 'Cassiopeia', dist: '99 ly' });
 
-// New Stars (Exoplanet Hosts)
+// New Stars (Exoplanet Hosts & Neighbors)
 addStar('TRAPPIST-1', 23.1, -5.04, 18.8, { dist: '39 ly', type: 'M8 (Red Dwarf)', meaning: 'TRAPPIST Telescope', exoplanets: '7 planets (b,c,d,e,f,g,h)' });
 addStar('Kepler-186', 19.9, 43.9, 12.5, { dist: '580 ly', type: 'M1 (Red Dwarf)', meaning: 'Kepler Mission', exoplanets: 'Kepler-186f (Habitable Zone)' });
 addStar('Tau Ceti', 1.74, -15.9, 3.49, { dist: '11.9 ly', type: 'G8 (Main Sequence)', meaning: 'Monster (Arabic)', constellation: 'Cetus', exoplanets: '4 candidates' });
+addStar('Proxima Centauri', 14.49, -62.68, 11.05, { dist: '4.24 ly', type: 'M5.5 (Red Dwarf)', meaning: 'Nearest Star', constellation: 'Centaurus', exoplanets: 'Proxima b, d' });
+addStar('Barnard\'s Star', 17.96, 4.69, 9.54, { dist: '5.96 ly', type: 'M4 (Red Dwarf)', meaning: 'Fast Mover', constellation: 'Ophiuchus' });
+addStar('Wolf 359', 10.93, 7.01, 13.5, { dist: '7.78 ly', type: 'M6 (Red Dwarf)', meaning: 'CN Leo', constellation: 'Leo' });
+addStar('Cygnus X-1', 19.97, 35.2, 8.95, { dist: '6070 ly', type: 'BlackHole', meaning: 'First Black Hole discovered', constellation: 'Cygnus' });
 
 
-// Deep Sky Objects (Galaxies, Nebulae, Clusters)
+// Deep Sky Objects (Galaxies, Nebulae, Clusters, Black Holes)
 const DSOs = [
     { name: 'Andromeda Galaxy (M31)', ra: 0.71, dec: 41.26, mag: 3.44, dist: '2,540,000 ly', type: 'Spiral Galaxy', desc: 'The nearest major galaxy to the Milky Way.' },
     { name: 'Triangulum Galaxy (M33)', ra: 1.56, dec: 30.66, mag: 5.72, dist: '3,000,000 ly', type: 'Spiral Galaxy', desc: 'The third-largest member of the Local Group.' },
@@ -150,7 +154,11 @@ const DSOs = [
     { name: 'Whirlpool Galaxy (M51)', ra: 13.5, dec: 47.19, mag: 8.4, dist: '23,000,000 ly', type: 'Spiral Galaxy', desc: 'Famous interacting galaxy pair.' },
     { name: 'Sombrero Galaxy (M104)', ra: 12.66, dec: -11.62, mag: 8.0, dist: '29,000,000 ly', type: 'Spiral Galaxy', desc: 'Has a bright nucleus and a large central bulge.' },
     { name: 'Pinwheel Galaxy (M101)', ra: 14.05, dec: 54.35, mag: 7.86, dist: '21,000,000 ly', type: 'Spiral Galaxy', desc: 'A face-on spiral galaxy.' },
-    { name: 'Virgo Cluster', ra: 12.45, dec: 12.7, mag: 9.0, dist: '54,000,000 ly', type: 'Galaxy Cluster', desc: 'A massive cluster of galaxies.' }
+    { name: 'Virgo Cluster', ra: 12.45, dec: 12.7, mag: 9.0, dist: '54,000,000 ly', type: 'Galaxy Cluster', desc: 'A massive cluster of galaxies.' },
+    { name: 'M87', ra: 12.51, dec: 12.39, mag: 9.6, dist: '53,000,000 ly', type: 'Elliptical Galaxy', desc: 'Home to the first black hole ever imaged.' },
+    { name: 'TON 618', ra: 12.47, dec: 29.48, mag: 15.9, dist: '10,400,000,000 ly', type: 'Quasar', desc: 'Contains one of the largest known black holes.' },
+    { name: 'Eagle Nebula (M16)', ra: 18.31, dec: -13.84, mag: 6.0, dist: '7,000 ly', type: 'Nebula', desc: 'Contains the Pillars of Creation.' },
+    { name: 'Carina Nebula (NGC 3372)', ra: 10.75, dec: -59.87, mag: 1.0, dist: '8,500 ly', type: 'Nebula', desc: 'A massive nebula in the southern sky.' }
 ];
 
 // Solar System Data (Elements for J2000)
@@ -163,6 +171,24 @@ const PlanetElements = {
     Saturn:  { N: 113.7, i: 2.49, w: 339.3, a: 9.5371, e: 0.0541, M: 317.0,  L_rate: 0.0334442282, w_rate: 0 },
     Uranus:  { N: 74.00, i: 0.77, w: 96.66, a: 19.191, e: 0.0471, M: 142.5,  L_rate: 0.011725806, w_rate: 0 },
     Neptune: { N: 131.7, i: 1.77, w: 272.8, a: 30.069, e: 0.0086, M: 260.2,  L_rate: 0.005995147, w_rate: 0 }
+};
+
+// Major Moons (Simplified Circular Orbits relative to parent)
+// a: semi-major axis in km, P: period in days
+const MoonElements = {
+    Earth: {
+        Moon: { a: 384400, P: 27.32, color: '#aaaaaa', r: 1737 }
+    },
+    Jupiter: {
+        Io:       { a: 421700, P: 1.769, color: '#ffffaa', r: 1821 },
+        Europa:   { a: 671034, P: 3.551, color: '#aaffff', r: 1560 },
+        Ganymede: { a: 1070412, P: 7.154, color: '#dddddd', r: 2634 },
+        Callisto: { a: 1882709, P: 16.689, color: '#999999', r: 2410 }
+    },
+    Saturn: {
+        Titan:    { a: 1221870, P: 15.945, color: '#ffcc00', r: 2574 },
+        Enceladus:{ a: 237948, P: 1.37, color: '#ffffff', r: 252 }
+    }
 };
 
 // Constellation data
@@ -392,6 +418,57 @@ const Astronomy = {
         const dec = Astronomy.radToDeg(dec_rad);
 
         return { ra, dec, dist: Math.sqrt(xg*xg + yg*yg + zg*zg) };
+    },
+
+    // Calculate Sun's Geocentric Position
+    calculateSunPos: (date) => {
+        const d = Astronomy.getJulianDate(date) - 2451545.0;
+        const M = (357.529 + 0.98560028 * d) % 360;
+        const L = (280.466 + 0.98564736 * d) % 360;
+        const M_rad = Astronomy.degToRad(M);
+        const L_rad = Astronomy.degToRad(L);
+
+        // Ecliptic coordinates
+        const r = 1.00014 - 0.01671 * Math.cos(M_rad) - 0.00014 * Math.cos(2 * M_rad);
+        const l_ecliptic = L + 1.915 * Math.sin(M_rad) + 0.020 * Math.sin(2 * M_rad);
+        const l_rad = Astronomy.degToRad(l_ecliptic);
+
+        const obl = Astronomy.degToRad(23.44);
+
+        // Equatorial coordinates
+        const x = r * Math.cos(l_rad);
+        const y = r * Math.sin(l_rad) * Math.cos(obl);
+        const z = r * Math.sin(l_rad) * Math.sin(obl);
+
+        const ra_rad = Math.atan2(y, x);
+        const dec_rad = Math.atan2(z, Math.sqrt(x*x + y*y));
+
+        let ra = Astronomy.radToDeg(ra_rad);
+        if (ra < 0) ra += 360;
+        const dec = Astronomy.radToDeg(dec_rad);
+
+        return { ra, dec, dist: r * 0.0000158125 }; // r is AU, convert to LY for consistency? No, usually AU. But our 3D space is LY. 1 AU = 1.58e-5 LY
+    },
+
+    // Simplified Moon position relative to Planet (returns offsets in AU)
+    calculateMoonPos: (planetName, moonName, date) => {
+        if (!MoonElements[planetName] || !MoonElements[planetName][moonName]) return null;
+        const elem = MoonElements[planetName][moonName];
+
+        const d = Astronomy.getJulianDate(date) - 2451545.0;
+
+        // Angle in orbit
+        const theta = (d / elem.P) * 2 * Math.PI;
+
+        // Assume circular orbit in x-y plane of planet (simplified)
+        // Convert km to AU
+        const a_au = elem.a / 149597870.7;
+
+        return {
+            x: a_au * Math.cos(theta),
+            y: a_au * Math.sin(theta),
+            z: 0 // Simplified 2D orbit
+        };
     }
 };
 
@@ -402,6 +479,7 @@ class Vector3 {
     sub(v) { return new Vector3(this.x - v.x, this.y - v.y, this.z - v.z); }
     scale(s) { return new Vector3(this.x * s, this.y * s, this.z * s); }
     dot(v) { return this.x * v.x + this.y * v.y + this.z * v.z; }
+    length() { return Math.sqrt(this.x*this.x + this.y*this.y + this.z*this.z); }
     cross(v) {
         return new Vector3(
             this.y * v.z - this.z * v.y,
@@ -481,9 +559,7 @@ class SkyApp {
         this.container.appendChild(this.popup);
 
         // Search Results container
-        this.searchResults = document.createElement('div');
-        this.searchResults.id = 'search-results';
-        document.querySelector('#search-input').parentNode.appendChild(this.searchResults);
+        this.searchResults = document.getElementById('search-results');
     }
 
     initStars() {
@@ -653,14 +729,9 @@ class SkyApp {
 
              // Start Position: 20 ly away, looking at Earth (0,0,0)
              this.camera.pos = new Vector3(0, -20, 10);
-             this.camera.yaw = Math.PI / 2; // Look at +Y? No, if pos is -Y, looking +Y is towards Earth.
-             // Forward vector from (0, -20, 10) to (0,0,0) is (0, 20, -10).
-             // Normalize: (0, 0.89, -0.44).
-             // asin(-0.44) = pitch
-             this.camera.pitch = Math.asin(-0.44);
-             // atan2(0.89, 0) = PI/2 (90 deg) = Yaw. Correct.
-             this.camera.yaw = Math.PI / 2;
-
+             this.camera.yaw = Math.PI / 2; 
+             this.camera.pitch = Math.asin(-0.44); // Look down slightly
+             
              this.camera.vel = new Vector3(0,0,0);
 
              // Animate "Launch" - Move backwards quickly
@@ -714,17 +785,74 @@ class SkyApp {
 
         travelBtn.addEventListener('click', () => {
             if (this.selectedObject) {
-                // If it's a star or DSO
                 const s = this.selectedObject.data;
-                if (s && s.pos3d) {
-                    if (this.mode === 'EARTH') setModeUI('GALAXY');
-                    const target = new Vector3(s.pos3d.x, s.pos3d.y, s.pos3d.z);
-                    const dir = target.normalize();
-                    // Go to 0.05 ly away for stars to see orbits, or farther if it's a big DSO
-                    const standoffDist = s.distanceLy > 100000 ? 50000 : 0.05;
-                    const standOff = target.sub(dir.scale(standoffDist));
+                // Switch mode if needed
+                if (this.mode === 'EARTH') setModeUI('GALAXY');
 
-                    this.animateCameraTo(standOff, target);
+                // Determine 3D Position
+                let target = null;
+                
+                // Case 1: Stars / DSOs with fixed pos3d
+                if (s.pos3d) {
+                    target = new Vector3(s.pos3d.x, s.pos3d.y, s.pos3d.z);
+                } 
+                // Case 2: Planets (Dynamic calculation)
+                else if (this.selectedObject.type === 'Planet') {
+                      const coords = Astronomy.calculatePlanetPos(this.selectedObject.name, this.date);
+                      if (coords) {
+                          const distLy = coords.dist * 0.0000158125;
+                          const pos = Astronomy.sphericalToCartesian(coords.ra, coords.dec, distLy);
+                          target = new Vector3(pos.x, pos.y, pos.z);
+                      }
+                } 
+                // Case 3: Moons
+                else if (this.selectedObject.type === 'Moon') {
+                      const pName = s.parent;
+                      const pCoords = Astronomy.calculatePlanetPos(pName, this.date);
+                      const mOffset = Astronomy.calculateMoonPos(pName, this.selectedObject.name, this.date);
+                      if (pCoords && mOffset) {
+                          const distLy = pCoords.dist * 0.0000158125;
+                          const pPos = Astronomy.sphericalToCartesian(pCoords.ra, pCoords.dec, distLy);
+                          const mOffsetLy = new Vector3(mOffset.x * 1.58e-5, mOffset.y * 1.58e-5, 0);
+                          // Vector math to add moon offset
+                          target = new Vector3(pPos.x + mOffsetLy.x, pPos.y + mOffsetLy.y, pPos.z);
+                      }
+                }
+
+                if (target) {
+                    // Determine Standoff Distance
+                    let standoffDist = 2; // Default for stars (2 LY)
+
+                    if (s.distanceLy > 100000) {
+                        standoffDist = 50000; // Big Galaxies
+                    } else if (this.selectedObject.type === 'Planet') {
+                        standoffDist = 0.000005; // ~0.3 AU
+                    } else if (this.selectedObject.type === 'Moon') {
+                        standoffDist = 0.0000005; // ~0.03 AU
+                    } else if (s.isSun) {
+                        standoffDist = 0.0001; // Close to Sun
+                    } else if (s.type === 'BlackHole') {
+                        standoffDist = 0.5; // Closer to Black Hole
+                    }
+
+                    // Special case: If target is 0,0,0 (Earth/Sun area) and we are far away
+                    if (target.x === 0 && target.y === 0 && target.z === 0) {
+                         const standOff = new Vector3(0, -standoffDist, 0); 
+                         this.animateCameraTo(standOff, target);
+                    } else {
+                         const dir = target.normalize();
+                         const standOff = target.sub(dir.scale(standoffDist));
+                         this.animateCameraTo(standOff, target);
+                    }
+
+                    // Adjust base speed for comfort based on scale
+                    if (standoffDist < 0.001) {
+                        this.camera.baseSpeed = 0.000001; // Slow down
+                    } else {
+                         this.camera.baseSpeed = 1.0;
+                    }
+                    flySpeed.value = this.camera.baseSpeed;
+                    speedVal.textContent = this.camera.baseSpeed.toFixed(6);
                 }
             }
         });
@@ -771,14 +899,13 @@ class SkyApp {
         if (lookAtPos) {
             // Vector from New Camera Pos (targetPos) to Object (lookAtPos)
             const forward = lookAtPos.sub(targetPos).normalize();
-
             // Calculate Yaw/Pitch from forward vector
             endPitch = Math.asin(forward.z);
             endYaw = Math.atan2(forward.y, forward.x);
         }
 
         let startTime = null;
-        const duration = 2000; // 2 seconds
+        const duration = 2500; // 2.5 seconds
 
         const animate = (timestamp) => {
             if (!startTime) startTime = timestamp;
@@ -794,22 +921,19 @@ class SkyApp {
             );
 
             // Warp Effect Intensity (Peak at 0.5)
-            // 0 -> 1 -> 0
             if (progress < 0.5) {
-                this.camera.warpFactor = progress * 2;
+                this.camera.warpFactor = progress * 4;
             } else {
-                this.camera.warpFactor = (1 - progress) * 2;
+                this.camera.warpFactor = (1 - progress) * 4;
             }
 
-            // Interpolate angles properly (shortest path logic omitted for brevity, usually small change)
+            // Interpolate angles properly 
             this.camera.yaw = startYaw + (endYaw - startYaw) * ease;
             this.camera.pitch = startPitch + (endPitch - startPitch) * ease;
 
-            // Update HUD manually during animation since physics is disabled
+            // Update HUD manually during animation
             const hudEl = document.getElementById('galaxy-hud');
-            if (hudEl) {
-                hudEl.innerHTML = `<span style="color:yellow">Warping...</span>`;
-            }
+            if (hudEl) hudEl.innerHTML = `<span style="color:#00ffff; font-weight:bold;">WARP DRIVE ACTIVE...</span>`;
 
             if (progress < 1) {
                 requestAnimationFrame(animate);
@@ -840,12 +964,23 @@ class SkyApp {
                 results.push({ type: 'Star', name, data });
             }
         }
-        // Planets
+        // Planets & Moons
         Object.keys(PlanetElements).forEach(p => {
              if (p.toLowerCase().includes(lowerTerm)) {
                  results.push({ type: 'Planet', name: p, data: {} });
              }
+             if (MoonElements[p]) {
+                 Object.keys(MoonElements[p]).forEach(m => {
+                     if (m.toLowerCase().includes(lowerTerm)) {
+                         results.push({ type: 'Moon', name: m, data: { parent: p, ...MoonElements[p][m] } });
+                     }
+                 });
+             }
         });
+        // Sun
+        if ('sun'.includes(lowerTerm) || 'sol'.includes(lowerTerm)) {
+             results.push({ type: 'Star', name: 'Sol', data: { type: 'Star', isSun: true, dist: '0 ly' } });
+        }
         // DSOs
         DSOs.forEach(dso => {
             if (dso.name.toLowerCase().includes(lowerTerm)) {
@@ -884,15 +1019,23 @@ class SkyApp {
         document.getElementById('travel-controls').style.display = 'none';
 
         if (obj.type === 'Star') {
-            const s = stars.get(obj.name);
+            let s = stars.get(obj.name);
+            // Fallback if data is provided directly (e.g. Sol)
+            if (!s && obj.data && obj.data.isSun) s = obj.data;
+
             if (s) {
-                s.highlighted = true;
+                if (stars.has(obj.name)) stars.get(obj.name).highlighted = true; // highlight if in map
+
                 this.selectedObject = { type: 'Star', name: obj.name, data: s };
                 document.getElementById('travel-controls').style.display = 'block';
                 this.showInfoPanel(obj.name, s);
             }
         } else if (obj.type === 'Planet') {
              this.showInfoPanel(obj.name, { type: 'Planet' }, false);
+             document.getElementById('travel-controls').style.display = 'block';
+        } else if (obj.type === 'Moon') {
+             this.showInfoPanel(obj.name, { type: 'Moon', parent: obj.data.parent }, false);
+             document.getElementById('travel-controls').style.display = 'block';
         } else if (obj.type === 'DSO') {
             obj.data.highlighted = true;
             document.getElementById('travel-controls').style.display = 'block';
@@ -939,10 +1082,7 @@ class SkyApp {
         const f = this.getCameraDirection();
         // Up (Global Z)
         let u = new Vector3(0,0,1);
-        // Right = f x u
-        // If f is vertical (0,0,1), this is singular.
         if (Math.abs(f.z) > 0.99) u = new Vector3(1,0,0);
-
         const r = f.cross(u).normalize();
 
         // Apply Roll
@@ -950,7 +1090,6 @@ class SkyApp {
             const cos = Math.cos(this.camera.roll);
             const sin = Math.sin(this.camera.roll);
             const up_base = r.cross(f); // The 'up' vector before roll
-
             // Rotate r around f
             return new Vector3(
                 r.x * cos + up_base.x * sin,
@@ -1039,9 +1178,6 @@ class SkyApp {
         // Target Velocity based on input
         const f = this.getCameraDirection();
         const r = this.getCameraRight();
-        const u = new Vector3(0,0,1); // Global Up for Space/Ctrl vertical movement?
-        // Actually Space usually is Up relative to camera or global?
-        // Let's use Camera Up for free flight feel
         const camU = this.getCameraUp();
 
         let targetVel = new Vector3(0,0,0);
@@ -1051,7 +1187,7 @@ class SkyApp {
         if (this.keys['KeyA']) targetVel = targetVel.sub(r);
         if (this.keys['KeyD']) targetVel = targetVel.add(r);
         if (this.keys['Space']) targetVel = targetVel.add(camU); // Up
-        if (this.keys['KeyC']) targetVel = targetVel.sub(camU);  // Down (Control is used for speed, so use C)
+        if (this.keys['KeyC']) targetVel = targetVel.sub(camU);  // Down
 
         if (targetVel.dot(targetVel) > 0) {
             targetVel = targetVel.normalize().scale(speed);
@@ -1068,27 +1204,16 @@ class SkyApp {
         this.camera.pos = this.camera.pos.add(this.camera.vel);
 
         // Banking/Roll Physics
-        // Calculate Yaw Delta
         const yawDelta = this.camera.yaw - this.lastYaw;
         this.lastYaw = this.camera.yaw;
-
-        // Target Roll depends on yaw change (banking into turn)
-        // Invert sign depending on desired feel (usually roll right for right turn?)
-        // If I turn right (yaw decreases? or increases?), I bank right.
-        // Yaw increases CCW (left). So if yaw increases, bank left (roll > 0?)
-        // Let's test: Yaw increase -> Roll positive.
-        const targetRoll = -yawDelta * 30.0; // Scale factor
-
-        // Smoothly interpolate roll
+        // Bank into turns
+        const targetRoll = -yawDelta * 30.0; 
         this.camera.roll += (targetRoll - this.camera.roll) * 0.1;
-
 
         // Update Galaxy DSOs positions (Galaxies navigating)
         if (this.galaxyDSOs) {
             this.galaxyDSOs.forEach(dso => {
                 if (dso.vel) {
-                     // Scale velocity by time? Currently just per frame.
-                     // Galaxies move very slowly in reality, but for effect we make them drift.
                      dso.pos3d = dso.pos3d.add(dso.vel.scale(0.01));
                 }
             });
@@ -1096,8 +1221,6 @@ class SkyApp {
 
         // Update HUD
         const p = this.camera.pos;
-
-        // Find nearest star
         let nearest = null;
         let minD = Infinity;
         // Check named stars only for performance in HUD
@@ -1154,25 +1277,6 @@ class SkyApp {
         ctx.stroke();
         ctx.fillStyle = '#0b0b15';
         ctx.fill();
-
-        // Milky Way Band Approximation (Static)
-        // Just a faint gradient band across the sky
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(cx, cy, horizonRadius, 0, Math.PI * 2);
-        ctx.clip();
-
-        // Calculate Milky Way orientation (roughly)
-        // Galactic Center is at RA 17h 45m (266 deg), Dec -29
-        // Convert to Horizon coords
-        const mwPos = Astronomy.equatorialToHorizontal(266, -29, this.latitude, lst);
-        // Draw a wide gradient band through the center point
-        // This is a very rough visual hack
-        if (mwPos.alt > -90) {
-            // Only draw if roughly visible context
-        }
-        ctx.restore();
-
 
         // Markers
         ctx.fillStyle = '#90caf9';
@@ -1256,7 +1360,7 @@ class SkyApp {
         ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
         ctx.fillRect(this.width/2 - 2, this.height/2 - 2, 4, 4);
 
-        // Advanced Sun Renderer
+        // Advanced Sun/Star Renderer
         const drawSun = (x, y, r, color, glowColor, seed = 0) => {
             // Base Glow
             const grad = ctx.createRadialGradient(x, y, r * 0.2, x, y, r * 1.5);
@@ -1271,11 +1375,10 @@ class SkyApp {
             ctx.fill();
 
             // "Flames" / Surface animation
-            // We simulate this by drawing rotated noise-like polygons
             ctx.save();
             ctx.translate(x, y);
             ctx.globalCompositeOperation = 'lighter';
-
+            
             const count = 3;
             for(let i=0; i<count; i++) {
                 ctx.rotate(this.tick * 0.005 * (i+1) + seed);
@@ -1294,6 +1397,34 @@ class SkyApp {
             ctx.restore();
             ctx.globalCompositeOperation = 'source-over'; // Reset
             ctx.globalAlpha = 1.0;
+        };
+
+        // Helper to draw Black Hole
+        const drawBlackHole = (x, y, r, accretionColor) => {
+             // Dark Core
+             ctx.fillStyle = '#000';
+             ctx.beginPath();
+             ctx.arc(x, y, r * 0.3, 0, Math.PI * 2);
+             ctx.fill();
+
+             // Accretion Disk
+             const grad = ctx.createRadialGradient(x, y, r * 0.3, x, y, r);
+             grad.addColorStop(0.3, '#000');
+             grad.addColorStop(0.35, '#ff4400');
+             grad.addColorStop(0.6, accretionColor);
+             grad.addColorStop(1, 'rgba(0,0,0,0)');
+
+             ctx.fillStyle = grad;
+             ctx.beginPath();
+             ctx.arc(x, y, r, 0, Math.PI * 2);
+             ctx.fill();
+
+             // Photon Ring (thin white circle)
+             ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+             ctx.lineWidth = 1;
+             ctx.beginPath();
+             ctx.arc(x, y, r * 0.35, 0, Math.PI * 2);
+             ctx.stroke();
         };
 
         // 1. Draw Background/Procedural Stars first (Furthest)
@@ -1326,7 +1457,7 @@ class SkyApp {
                  const sunRadius = Math.max(50, 1000 / proj.dist);
                  drawSun(proj.x, proj.y, sunRadius, bg.color, bg.color, bg.pos3d.x);
                  this.renderedStars.push({ name: 'Unknown Star', ...bg, ...proj, isStar: true, isProcedural: true });
-
+                 
                  // Draw Procedural Orbits if extremely close
                  if (proj.dist < 0.1) {
                      this.drawProceduralSystem(ctx, proj.x, proj.y, proj.dist, bg.pos3d.x);
@@ -1345,16 +1476,13 @@ class SkyApp {
                 const vx = proj.x - cx;
                 const vy = proj.y - cy;
                 const distFromCenter = Math.sqrt(vx*vx + vy*vy);
-
+                
                 // Scale streak by distance from center (perspective warp)
-                // and warpIntensity
                 const streakLen = Math.min(distFromCenter * warpIntensity, 200);
 
                 if (streakLen > 2) {
                     ctx.beginPath();
                     ctx.moveTo(proj.x, proj.y);
-                    // Draw inwards? No, moving forward stars go OUT.
-                    // So tail is inwards.
                     const tailX = proj.x - (vx / distFromCenter) * streakLen;
                     const tailY = proj.y - (vy / distFromCenter) * streakLen;
                     ctx.lineTo(tailX, tailY);
@@ -1388,13 +1516,126 @@ class SkyApp {
             }
         });
 
-        // 3. Draw Earth
+        // 3. Draw Solar System (Sun, Planets, Moons)
+        
+        // Calculate Sun Position
+        const sunCoords = Astronomy.calculateSunPos(this.date);
+        const sunPos = Astronomy.sphericalToCartesian(sunCoords.ra, sunCoords.dec, sunCoords.dist);
+        // sunCoords.dist is in LY.
+        
+        const sunProj = this.project3D(sunPos);
+        if (sunProj) {
+            // Sun Rendering
+            if (sunProj.dist < 10) {
+                const r = Math.max(5, 500 / sunProj.dist);
+                drawSun(sunProj.x, sunProj.y, r, '#ffcc00', '#ffaa00');
+            } else {
+                ctx.fillStyle = '#ffcc00';
+                ctx.beginPath();
+                ctx.arc(sunProj.x, sunProj.y, Math.max(2, 500/sunProj.dist), 0, Math.PI*2);
+                ctx.fill();
+            }
+            // Add to rendered list for selection
+            this.renderedStars.push({ name: 'Sol', type: 'Star', ...sunCoords, pos3d: sunPos, ...sunProj, isStar: true, isSun: true });
+        }
+
+        // Planets
+        Object.keys(PlanetElements).forEach(pName => {
+             const pCoords = Astronomy.calculatePlanetPos(pName, this.date);
+             if (pCoords) {
+                 const distLy = pCoords.dist * 0.0000158125;
+                 const pPos = Astronomy.sphericalToCartesian(pCoords.ra, pCoords.dec, distLy);
+                 const pProj = this.project3D(pPos);
+
+                 if (pProj) {
+                     // Draw Planet
+                     let r = Math.max(2, 200000 * (1.0/pProj.dist)); // Scale up planets to be visible
+                     // If really close, cap it or make it huge
+                     if (pProj.dist < 0.000001) r = 50; 
+                     else if (pProj.dist < 0.0001) r = 20;
+                     else r = Math.min(r, 6);
+
+                     ctx.fillStyle = '#ffccaa';
+                     if (pName === 'Mars') ctx.fillStyle = '#ff5500';
+                     if (pName === 'Jupiter') ctx.fillStyle = '#ccaa88';
+                     if (pName === 'Saturn') ctx.fillStyle = '#eebb88';
+                     if (pName === 'Neptune') ctx.fillStyle = '#4444ff';
+                     if (pName === 'Uranus') ctx.fillStyle = '#88ffff';
+                     
+                     ctx.beginPath();
+                     ctx.arc(pProj.x, pProj.y, r, 0, Math.PI*2);
+                     ctx.fill();
+
+                     // Planet Phase (Shadow)
+                     if (r > 10) {
+                         // Calculate vector from Planet to Sun
+                         const sunVec = sunPos.sub(pPos).normalize();
+                         // Vector from Planet to Camera
+                         const camVec = this.camera.pos.sub(pPos).normalize();
+                         // Simple dot product for phase
+                         const dot = sunVec.dot(camVec); // 1 = full, -1 = new
+                         
+                         ctx.fillStyle = 'rgba(0,0,0,0.7)';
+                         ctx.beginPath();
+                         ctx.arc(pProj.x, pProj.y, r, 0, Math.PI*2);
+                         // This is a very rough approximation of a phase shadow
+                         ctx.clip();
+                         ctx.beginPath();
+                         ctx.rect(pProj.x - r, pProj.y - r, r * (1-dot), r*2);
+                         ctx.fill();
+                     }
+
+                     this.renderedStars.push({ name: pName, type: 'Planet', ...pCoords, pos3d: pPos, ...pProj, isPlanet: true });
+                     
+                     // Moons
+                     if (MoonElements[pName]) {
+                         Object.keys(MoonElements[pName]).forEach(mName => {
+                             const mData = MoonElements[pName][mName];
+                             const mOffset = Astronomy.calculateMoonPos(pName, mName, this.date); // in AU
+                             if (mOffset) {
+                                 // Convert Offset to LY
+                                 const mOffsetLy = new Vector3(mOffset.x * 1.58e-5, mOffset.y * 1.58e-5, 0);
+                                 const mPos = pPos.add(mOffsetLy);
+                                 const mProj = this.project3D(mPos);
+
+                                 if (mProj) {
+                                     if (pProj.dist < 0.0001) { // Only draw moons if close to planet
+                                         ctx.fillStyle = mData.color || '#aaa';
+                                         ctx.beginPath();
+                                         ctx.arc(mProj.x, mProj.y, 2, 0, Math.PI*2);
+                                         ctx.fill();
+                                         this.renderedStars.push({ name: mName, type: 'Moon', pos3d: mPos, ...mProj, isMoon: true, parent: pName });
+                                     }
+                                 }
+                             }
+                         });
+                     }
+                 }
+             }
+        });
+
+        // Earth
         const earthProj = this.project3D(new Vector3(0,0,0));
         if (earthProj) {
              if (earthProj.dist < 10) {
-                 // Draw Blue Marble
                  const r = 200 / earthProj.dist;
                  drawSun(earthProj.x, earthProj.y, r, '#00aaff', '#0055aa');
+                 
+                 // Earth Moon
+                 const mOffset = Astronomy.calculateMoonPos('Earth', 'Moon', this.date);
+                 if (mOffset) {
+                     const mOffsetLy = new Vector3(mOffset.x * 1.58e-5, mOffset.y * 1.58e-5, 0);
+                     const mPos = new Vector3(0,0,0).add(mOffsetLy);
+                     const mProj = this.project3D(mPos);
+                     if (mProj) {
+                         ctx.fillStyle = '#aaaaaa';
+                         ctx.beginPath();
+                         ctx.arc(mProj.x, mProj.y, Math.max(2, 50/mProj.dist), 0, Math.PI*2);
+                         ctx.fill();
+                         this.renderedStars.push({ name: 'Moon', type: 'Moon', pos3d: mPos, ...mProj, isMoon: true, parent: 'Earth' });
+                     }
+                 }
+
              } else {
                  ctx.fillStyle = '#00aaff';
                  ctx.beginPath();
@@ -1411,23 +1652,28 @@ class SkyApp {
             if (proj) {
                 // Determine color
                 let color = SpectralColors[data.colorCode] || '#ffffff';
-
+                
                 // If close
                 if (proj.dist < 10) {
                      // Extreme Close Up
                      const visualSize = Math.max(3, 100 / proj.dist);
-
+                     
                      if (visualSize > 10) {
-                         drawSun(proj.x, proj.y, visualSize, color, color);
-                     } else {
-                         // Normal star draw
+                         if (data.type === 'BlackHole') {
+                             drawBlackHole(proj.x, proj.y, visualSize, '#ff6600');
+                         } else {
+                             drawSun(proj.x, proj.y, visualSize, color, color);
+                         }
                      }
-
+                     
                      // Draw Procedural Orbits if extremely close (even for named stars)
                      if (proj.dist < 0.1) {
                         this.drawProceduralSystem(ctx, proj.x, proj.y, proj.dist, data.ra);
                      }
                 }
+
+                // Black hole specific rendering even at distance?
+                if (data.type === 'BlackHole') color = '#5500aa';
 
                 this.renderedStars.push({ name, ...data, ...proj, isStar: true, color });
             }
@@ -1435,12 +1681,8 @@ class SkyApp {
 
         this.drawConstellationsAndStars(ctx);
     }
-
+    
     drawProceduralSystem(ctx, sx, sy, distToStar, seed) {
-         // distToStar is distance from camera to star in ly.
-         // If we are < 0.1 ly, we are inside the system.
-         // Draw orbits.
-
          // Use a consistent seeded random
          const random = (s) => {
              const x = Math.sin(s) * 10000;
@@ -1449,21 +1691,14 @@ class SkyApp {
 
          ctx.strokeStyle = 'rgba(255,255,255,0.3)';
          ctx.lineWidth = 1;
-
+         
          // Generate deterministic planets based on seed
          const numPlanets = 3 + Math.floor(random(seed) * 5);
-
+         
          for(let i=0; i<numPlanets; i++) {
-             // Fake orbit radius in Ly (very small)
-             // We scale it up for visualization so it's visible when "inside" the system
-             // Let's say the system view spans 0.0001 Ly.
-             // We need to project the 3D orbit, but here we cheat and draw 2D ellipses facing camera
-             // because full 3D orbital mechanics + projection in this simple engine is complex.
-             // However, to make it "navigate interactively", we should try to project if possible.
-             // But for now, 2D overlay centered on star is "good enough" for the requested effect.
-
+             // Fake orbit radius scaled for visualization
              const orbitRadiusScreen = (this.height / 3) * ((i+1) / numPlanets) * (0.01 / distToStar);
-
+             
              if (orbitRadiusScreen > this.width * 2) continue;
              if (orbitRadiusScreen < 10) continue;
 
@@ -1477,12 +1712,12 @@ class SkyApp {
              // Ellipse parametric
              const ex = orbitRadiusScreen * Math.cos(angle);
              const ey = orbitRadiusScreen * 0.4 * Math.sin(angle);
-
+             
              // Rotate ellipse point by same rotation as ellipse
              const rot = this.tick * 0.001;
              const px = sx + ex * Math.cos(rot) - ey * Math.sin(rot);
              const py = sy + ex * Math.sin(rot) + ey * Math.cos(rot);
-
+             
              ctx.fillStyle = i % 2 === 0 ? '#ffccaa' : '#aaccff';
              ctx.beginPath();
              ctx.arc(px, py, 4 + (100/distToStar)*0.1, 0, Math.PI*2);
@@ -1503,7 +1738,7 @@ class SkyApp {
                     ctx.beginPath();
                     ctx.moveTo(s1.x, s1.y);
                     ctx.lineTo(s2.x, s2.y);
-
+                    
                     if (constellation.highlighted) {
                         ctx.strokeStyle = '#ffd700';
                         ctx.lineWidth = 2;
@@ -1517,16 +1752,8 @@ class SkyApp {
         });
 
         // Draw Objects (Overlay Layer for Named/Significant Objects)
-        // Note: Procedural stars are already drawn in drawGalaxyView background step,
-        // but if they are close (added to renderedStars), they might be redrawn here?
-        // Let's filter duplications or just handle labels here.
-
         this.renderedStars.forEach(obj => {
-            // Skip pure procedural background rendering if we did it manually,
-            // but we added them to list for interaction.
-            // If it's a "Sun" (close up), we already drew the gradient. We just need label/interaction hit area.
-
-            // If we already drew a big sun, don't draw a small dot on top.
+            // Skip big suns (handled in drawGalaxyView)
             const isCloseUp = (this.mode === 'GALAXY' && obj.dist < 10 && (100/obj.dist) > 10);
             if (isCloseUp && (obj.isStar || obj.isDSO)) {
                  // Just Label
@@ -1551,7 +1778,7 @@ class SkyApp {
                 color = '#00ffcc';
                 r = 3;
                 if (this.mode === 'GALAXY') {
-                    r = Math.max(2, (10000000 / obj.dist)); // Larger Galaxies (10m factor)
+                    r = Math.max(2, (10000000 / obj.dist)); // Larger Galaxies
                     r = Math.min(r, 800); // Cap
                 }
             } else {
@@ -1575,20 +1802,19 @@ class SkyApp {
             }
 
             ctx.beginPath();
-
+            
             if (obj.isDSO) {
                  // Draw Galaxy Shape (Elliptical Glow)
                  ctx.save();
                  ctx.translate(obj.x, obj.y);
                  ctx.rotate(0.5); // Tilt
-
-                 // Gradient for galaxy
+                 
                  const grad = ctx.createRadialGradient(0, 0, r*0.2, 0, 0, r*2);
                  grad.addColorStop(0, '#ffffff');
                  grad.addColorStop(0.4, color);
                  grad.addColorStop(1, 'rgba(0,0,0,0)');
                  ctx.fillStyle = grad;
-
+                 
                  ctx.scale(1.5, 0.8); // Aspect ratio
                  ctx.beginPath();
                  ctx.arc(0, 0, r*2, 0, Math.PI*2);
@@ -1657,12 +1883,13 @@ class SkyApp {
 
     showInfoPanel(name, data, isConstellation = false) {
         const infoPanel = document.getElementById('constellation-info');
+        document.getElementById('info-panel').style.display = 'block';
         let html = `<h2>${name}</h2>`;
 
         if (isConstellation) {
              html += `<p><strong>Mythology:</strong> ${data.mythology}</p>`;
              html += `<p><strong>Stars:</strong> ${data.stars.join(', ')}</p>`;
-             html += `<p style="font-size:0.8em; margin-top:10px; color:#aaa;">In Galaxy View, notice how this shape distorts as you move away from Earth, revealing that these stars are actually at vastly different distances.</p>`;
+             html += `<p style="font-size:0.8em; margin-top:10px; color:#aaa;">In Galaxy View, notice how this shape distorts as you move away from Earth.</p>`;
         } else if (data.type === 'Planet') {
              html += `<p><strong>Type:</strong> Planet</p>`;
              html += `<p>Planets wander against the background stars. Their position changes daily.</p>`;
