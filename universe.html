@@ -1,3 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stellar Cartographer: Infinite Expanse</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #000; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        #star-map { width: 100vw; height: 100vh; position: relative; }
+        
+        /* UI Overlay */
+        .ui-panel {
+            position: absolute;
+            background: rgba(10, 15, 30, 0.85);
+            border: 1px solid #445577;
+            padding: 15px;
+            border-radius: 8px;
+            color: #b0c0ff;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 20px rgba(0, 100, 255, 0.1);
+        }
+
+        h2, h3 { margin-top: 0; color: #fff; text-shadow: 0 0 10px #00aaff; }
+        label { display: block; margin-top: 10px; font-size: 0.9em; }
+        input[type="range"], input[type="number"], input[type="datetime-local"], input[type="text"] {
+            width: 100%;
+            background: #1a2035;
+            border: 1px solid #445577;
+            color: #fff;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        button {
+            background: linear-gradient(180deg, #2a3b55, #1a253a);
+            border: 1px solid #5577aa;
+            color: #fff;
+            padding: 8px 12px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        button:hover { background: #3a4b65; border-color: #88aaff; box-shadow: 0 0 10px #00aaff; }
+        button.active { background: #0055aa; border-color: #0088ff; }
+
+        /* Specific Panels */
+        #controls-left { top: 20px; left: 20px; width: 280px; }
+        #info-panel { top: 20px; right: 20px; width: 300px; max-height: 80vh; overflow-y: auto; }
+        #hud-bottom { bottom: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; pointer-events: none; }
+        .hud-text { color: rgba(255,255,255,0.6); font-family: monospace; font-size: 14px; }
+
+        /* Search Results */
+        #search-results {
+            max-height: 200px;
+            overflow-y: auto;
+            background: #0b101a;
+            border: 1px solid #445577;
+            position: absolute;
+            width: 90%;
+            z-index: 10;
+            display: none;
+        }
+        .search-result-item { padding: 8px; cursor: pointer; border-bottom: 1px solid #223344; }
+        .search-result-item:hover { background: #1a253a; color: #fff; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0b101a; }
+        ::-webkit-scrollbar-thumb { background: #445577; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<div id="star-map">
+    <div id="controls-left" class="ui-panel">
+        <h3>Command Deck</h3>
+        
+        <div style="display: flex; gap: 5px; margin-bottom: 15px;">
+            <button id="btn-mode-earth" class="active">Earth View</button>
+            <button id="btn-mode-galaxy">Galaxy View</button>
+        </div>
+
+        <div style="position: relative;">
+            <input type="text" id="search-input" placeholder="Search Stars, Planets, DSOs..." autocomplete="off">
+            <div id="search-results"></div>
+        </div>
+
+        <div id="earth-controls">
+            <label>Date/Time</label>
+            <input type="datetime-local" id="datetime">
+            <button id="btn-set-now">Set to Now</button>
+            
+            <label>Observer Location</label>
+            <div style="display:flex; gap:5px;">
+                <input type="number" id="location-lat" step="0.1" placeholder="Lat">
+                <input type="number" id="location-lon" step="0.1" placeholder="Lon">
+            </div>
+            <button id="btn-use-location">Use My Location</button>
+        </div>
+
+        <div id="galaxy-controls" style="display:none;">
+            <label>Warp Drive Speed (ly/s): <span id="speed-val">1.0</span></label>
+            <input type="range" id="fly-speed" min="0.1" max="50" step="0.1" value="1.0">
+            
+            <button id="btn-reset-view">Reset to Sol System</button>
+            <div style="margin-top: 15px; font-size: 0.8em; color: #88aaff;">
+                WASD: Move | SPACE/C: Up/Down<br>
+                SHIFT: Boost | MOUSE: Look
+            </div>
+        </div>
+    </div>
+
+    <div id="info-panel" class="ui-panel" style="display:none;">
+        <div id="constellation-info"></div>
+        <div id="travel-controls" style="display:none; margin-top:15px; border-top:1px solid #445577; padding-top:10px;">
+            <button id="btn-travel-to">Engage Warp Drive</button>
+        </div>
+    </div>
+
+    <div id="hud-bottom">
+        <div id="galaxy-hud" class="hud-text"></div>
+        <div class="hud-text">Stellar Cartographer v2.0</div>
+    </div>
+</div>
+
+<script>
 // --- Data Definitions ---
 
 const SpectralColors = {
@@ -1924,3 +2051,6 @@ class SkyApp {
 document.addEventListener('DOMContentLoaded', () => {
     new SkyApp();
 });
+</script>
+</body>
+</html>
