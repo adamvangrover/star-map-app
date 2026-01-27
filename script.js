@@ -158,7 +158,12 @@ const DSOs = [
     { name: 'M87', ra: 12.51, dec: 12.39, mag: 9.6, dist: '53,000,000 ly', type: 'Elliptical Galaxy', desc: 'Home to the first black hole ever imaged.' },
     { name: 'TON 618', ra: 12.47, dec: 29.48, mag: 15.9, dist: '10,400,000,000 ly', type: 'Quasar', desc: 'Contains one of the largest known black holes.' },
     { name: 'Eagle Nebula (M16)', ra: 18.31, dec: -13.84, mag: 6.0, dist: '7,000 ly', type: 'Nebula', desc: 'Contains the Pillars of Creation.' },
-    { name: 'Carina Nebula (NGC 3372)', ra: 10.75, dec: -59.87, mag: 1.0, dist: '8,500 ly', type: 'Nebula', desc: 'A massive nebula in the southern sky.' }
+    { name: 'Carina Nebula (NGC 3372)', ra: 10.75, dec: -59.87, mag: 1.0, dist: '8,500 ly', type: 'Nebula', desc: 'A massive nebula in the southern sky.' },
+    { name: 'Bode\'s Galaxy (M81)', ra: 9.92, dec: 69.06, mag: 6.9, dist: '12,000,000 ly', type: 'Spiral Galaxy', desc: 'A grand design spiral galaxy in Ursa Major.' },
+    { name: 'Cigar Galaxy (M82)', ra: 9.93, dec: 69.68, mag: 8.4, dist: '12,000,000 ly', type: 'Starburst Galaxy', desc: 'Undergoing high rates of star formation.' },
+    { name: 'Sunflower Galaxy (M63)', ra: 13.26, dec: 42.02, mag: 9.3, dist: '29,000,000 ly', type: 'Spiral Galaxy', desc: 'Part of the M51 Group.' },
+    { name: 'Ring Nebula (M57)', ra: 18.89, dec: 33.03, mag: 8.8, dist: '2,000 ly', type: 'Planetary Nebula', desc: 'A famous ring-shaped nebula in Lyra.' },
+    { name: 'Helix Nebula', ra: 22.49, dec: -20.83, mag: 7.6, dist: '650 ly', type: 'Planetary Nebula', desc: 'One of the closest planetary nebulae to Earth.' }
 ];
 
 // Solar System Data (Elements for J2000)
@@ -189,6 +194,46 @@ const MoonElements = {
         Titan:    { a: 1221870, P: 15.945, color: '#ffcc00', r: 2574 },
         Enceladus:{ a: 237948, P: 1.37, color: '#ffffff', r: 252 }
     }
+};
+
+// Exoplanet Systems Data (Simplified circular orbits for visualization)
+// a in AU, P in days
+const ExoplanetData = {
+    'TRAPPIST-1': [
+        { name: 'b', a: 0.011, P: 1.51, color: '#ffaaaa', r: 1.1 },
+        { name: 'c', a: 0.015, P: 2.42, color: '#ffcccc', r: 1.0 },
+        { name: 'd', a: 0.021, P: 4.05, color: '#aaffaa', r: 0.7 }, // Habitable-ish
+        { name: 'e', a: 0.028, P: 6.10, color: '#00ff00', r: 0.9 }, // Habitable
+        { name: 'f', a: 0.037, P: 9.21, color: '#00ffff', r: 1.0 }, // Habitable
+        { name: 'g', a: 0.045, P: 12.35, color: '#aaaaff', r: 1.1 },
+        { name: 'h', a: 0.060, P: 20.00, color: '#aaaaaa', r: 0.7 }
+    ],
+    'Proxima Centauri': [
+        { name: 'b', a: 0.0485, P: 11.186, color: '#00ffaa', r: 1.0 }, // Habitable
+        { name: 'c', a: 1.489, P: 1928, color: '#aaaaff', r: 7.0 }
+    ],
+    'Kepler-186': [
+         { name: 'f', a: 0.356, P: 129.9, color: '#00ffaa', r: 1.1 }
+    ]
+};
+
+// Guided Tours Data
+const TourData = {
+    'SolarSystem': [
+        { target: 'Sol', duration: 3000, standOff: 0.0005, msg: 'Welcome to the Solar System.' },
+        { target: 'Mercury', duration: 3000, standOff: 0.00001, msg: 'Mercury: The closest planet to the Sun.' },
+        { target: 'Venus', duration: 3000, standOff: 0.00001, msg: 'Venus: A hot, thick atmosphere.' },
+        { target: 'Earth', duration: 3000, standOff: 0.0001, msg: 'Earth: Our home.' },
+        { target: 'Mars', duration: 3000, standOff: 0.00005, msg: 'Mars: The Red Planet.' },
+        { target: 'Jupiter', duration: 4000, standOff: 0.001, msg: 'Jupiter: The Gas Giant.' },
+        { target: 'Saturn', duration: 4000, standOff: 0.001, msg: 'Saturn: Famous for its rings.' }
+    ],
+    'NearestStars': [
+        { target: 'Proxima Centauri', duration: 4000, standOff: 0.0001, msg: 'Proxima Centauri: The nearest star to us, hosting exoplanets.' },
+        { target: 'Rigil Kentaurus', duration: 3000, standOff: 2, msg: 'Alpha Centauri A.' },
+        { target: 'Barnard\'s Star', duration: 3000, standOff: 0.5, msg: 'Barnard\'s Star: High proper motion red dwarf.' },
+        { target: 'Sirius', duration: 4000, standOff: 2, msg: 'Sirius: The brightest star in the sky.' }
+    ]
 };
 
 // Constellation data
@@ -525,6 +570,7 @@ class SkyApp {
             baseSpeed: 1.0, // light years per tick/sec
             warpFactor: 0, // 0 to 1, visual effect intensity
         };
+        this.quantumFlux = 50; // 0-100
         this.lastYaw = 0;
         this.keys = {};
         this.isAnimating = false; // Flag to disable physics during animation
@@ -692,6 +738,7 @@ class SkyApp {
         // Mode Toggles
         const btnEarth = document.getElementById('btn-mode-earth');
         const btnGalaxy = document.getElementById('btn-mode-galaxy');
+        const btnQuantum = document.getElementById('btn-mode-quantum');
 
         // Galaxy Controls
         const flySpeed = document.getElementById('fly-speed');
@@ -699,23 +746,38 @@ class SkyApp {
         const resetView = document.getElementById('btn-reset-view');
         const travelBtn = document.getElementById('btn-travel-to');
 
+        // Quantum Controls
+        const fluxVal = document.getElementById('flux-val');
+
+        // Tour Controls
+        document.getElementById('btn-tour-solar').addEventListener('click', () => this.startTour('SolarSystem'));
+        document.getElementById('btn-tour-nearest').addEventListener('click', () => this.startTour('NearestStars'));
+
         this.updateInputs();
 
         // Mode Switching
         const setModeUI = (m) => {
             this.mode = m;
+            document.getElementById('earth-controls').style.display = 'none';
+            document.getElementById('galaxy-controls').style.display = 'none';
+            document.getElementById('quantum-controls').style.display = 'none';
+            document.getElementById('galaxy-hud').style.display = 'none';
+
+            btnEarth.classList.remove('active');
+            btnGalaxy.classList.remove('active');
+            btnQuantum.classList.remove('active');
+
             if (m === 'EARTH') {
                 document.getElementById('earth-controls').style.display = 'block';
-                document.getElementById('galaxy-controls').style.display = 'none';
-                document.getElementById('galaxy-hud').style.display = 'none';
                 btnEarth.classList.add('active');
-                btnGalaxy.classList.remove('active');
-            } else {
-                document.getElementById('earth-controls').style.display = 'none';
+            } else if (m === 'GALAXY') {
                 document.getElementById('galaxy-controls').style.display = 'block';
                 document.getElementById('galaxy-hud').style.display = 'block';
-                btnEarth.classList.remove('active');
                 btnGalaxy.classList.add('active');
+            } else if (m === 'QUANTUM') {
+                document.getElementById('quantum-controls').style.display = 'block';
+                document.getElementById('galaxy-hud').style.display = 'block';
+                btnQuantum.classList.add('active');
             }
         };
 
@@ -723,8 +785,6 @@ class SkyApp {
         this.transitionToGalaxy = () => {
              if (this.mode === 'GALAXY') return;
 
-             // 1. Switch UI immediately or fade? Let's switch to Galaxy Mode
-             // But set camera to look at Earth from close up
              setModeUI('GALAXY');
 
              // Start Position: 20 ly away, looking at Earth (0,0,0)
@@ -737,6 +797,19 @@ class SkyApp {
              // Animate "Launch" - Move backwards quickly
              const target = new Vector3(0, -1000, 500);
              this.animateCameraTo(target, new Vector3(0,0,0));
+        };
+
+        this.transitionToQuantum = () => {
+             if (this.mode === 'QUANTUM') return;
+             setModeUI('QUANTUM');
+             // Start Position: same as current if switching from Galaxy, else default
+             if (this.mode === 'EARTH') {
+                 this.camera.pos = new Vector3(0, -20, 10);
+                 this.camera.yaw = Math.PI / 2;
+                 this.camera.pitch = Math.asin(-0.44);
+             }
+             this.camera.vel = new Vector3(0,0,0);
+             this.quantumFlux = 50;
         };
 
         this.transitionToEarth = () => {
@@ -752,6 +825,7 @@ class SkyApp {
 
         btnEarth.addEventListener('click', () => this.transitionToEarth());
         btnGalaxy.addEventListener('click', () => this.transitionToGalaxy());
+        btnQuantum.addEventListener('click', () => this.transitionToQuantum());
 
         // Earth Inputs
         latInput.addEventListener('change', (e) => this.latitude = parseFloat(e.target.value));
@@ -781,6 +855,11 @@ class SkyApp {
 
         resetView.addEventListener('click', () => {
             this.animateCameraTo(new Vector3(0,0,0));
+        });
+
+        // Quantum Inputs
+        fluxVal.addEventListener('input', (e) => {
+            this.quantumFlux = parseInt(e.target.value);
         });
 
         travelBtn.addEventListener('click', () => {
@@ -869,6 +948,14 @@ class SkyApp {
                 this.scale *= (e.deltaY > 0 ? 0.9 : 1.1);
                 this.scale = Math.max(0.5, Math.min(this.scale, 5));
             } else {
+                // Quantum Shift+Scroll to change Dimension
+                if (this.mode === 'QUANTUM' && e.shiftKey) {
+                    const delta = e.deltaY > 0 ? -5 : 5;
+                    this.quantumFlux = Math.max(0, Math.min(100, this.quantumFlux + delta));
+                    fluxVal.value = this.quantumFlux; // Update UI slider
+                    return;
+                }
+
                 const speed = this.camera.baseSpeed * 5;
                 const dir = this.getCameraDirection();
                 const move = dir.scale(e.deltaY > 0 ? -speed : speed);
@@ -880,6 +967,7 @@ class SkyApp {
         this.canvas.addEventListener('mousedown', (e) => this.mouseDown = true);
         this.canvas.addEventListener('mouseup', (e) => this.mouseDown = false);
         this.canvas.addEventListener('click', (e) => this.handleClick(e));
+        this.canvas.addEventListener('dblclick', (e) => this.handleDoubleClick(e));
 
         // Keyboard for flying
         window.addEventListener('keydown', (e) => this.keys[e.code] = true);
@@ -933,7 +1021,13 @@ class SkyApp {
 
             // Update HUD manually during animation
             const hudEl = document.getElementById('galaxy-hud');
-            if (hudEl) hudEl.innerHTML = `<span style="color:#00ffff; font-weight:bold;">WARP DRIVE ACTIVE...</span>`;
+            if (hudEl) {
+                if (this.tourMessage) {
+                     hudEl.innerHTML = `<span style="color:#00ff00; font-size:1.2em; text-shadow: 0 0 5px black;">TOUR: ${this.tourMessage}</span>`;
+                } else {
+                     hudEl.innerHTML = `<span style="color:#00ffff; font-weight:bold;">WARP DRIVE ACTIVE...</span>`;
+                }
+            }
 
             if (progress < 1) {
                 requestAnimationFrame(animate);
@@ -946,6 +1040,75 @@ class SkyApp {
             }
         };
         requestAnimationFrame(animate);
+    }
+
+    startTour(tourName) {
+        const tour = TourData[tourName];
+        if (!tour) return;
+
+        this.tourMessage = null;
+
+        // Ensure UI is ready
+        this.transitionToGalaxy();
+
+        let step = 0;
+
+        const nextStep = () => {
+            if (step >= tour.length) {
+                 this.tourMessage = null;
+                 const hud = document.getElementById('galaxy-hud');
+                 if (hud) hud.innerHTML = `<span style="color:#00ff00;">TOUR COMPLETE</span>`;
+                 return;
+            }
+            const item = tour[step];
+
+            // Find object coordinates
+            let targetPos = null;
+            let targetName = item.target;
+
+            if (targetName === 'Sol') {
+                 targetPos = new Vector3(0,0,0);
+            } else if (PlanetElements[targetName]) {
+                 const coords = Astronomy.calculatePlanetPos(targetName, this.date);
+                 if (coords) {
+                     const distLy = coords.dist * 0.0000158125;
+                     const p = Astronomy.sphericalToCartesian(coords.ra, coords.dec, distLy);
+                     targetPos = new Vector3(p.x, p.y, p.z);
+                 }
+            } else if (stars.has(targetName)) {
+                 const s = stars.get(targetName);
+                 if (s.pos3d) targetPos = new Vector3(s.pos3d.x, s.pos3d.y, s.pos3d.z);
+            }
+
+            if (targetPos) {
+                this.tourMessage = item.msg;
+                // Show Message
+                const hud = document.getElementById('galaxy-hud');
+                if (hud) hud.innerHTML = `<span style="color:#00ff00; font-size:1.2em; text-shadow: 0 0 5px black;">TOUR: ${item.msg}</span>`;
+
+                // Calculate standoff
+                let standoffVec = new Vector3(0, -item.standOff, 0);
+                // Better standoff: if target is not origin, offset towards origin (Earth) so we look at it from "home" side
+                if (targetPos.length() > 0.000001) {
+                    standoffVec = targetPos.normalize().scale(-item.standOff);
+                }
+                const dest = targetPos.add(standoffVec);
+
+                this.animateCameraTo(dest, targetPos, () => {
+                     // Wait for duration then next
+                     setTimeout(() => {
+                         step++;
+                         nextStep();
+                     }, item.duration);
+                });
+            } else {
+                console.log('Skipping ' + targetName);
+                step++;
+                nextStep();
+            }
+        };
+
+        nextStep();
     }
 
     handleSearch(term) {
@@ -1167,7 +1330,7 @@ class SkyApp {
     }
 
     updatePhysics() {
-        if (this.mode !== 'GALAXY') return;
+        if (this.mode !== 'GALAXY' && this.mode !== 'QUANTUM') return;
         if (this.isAnimating) return; // Skip physics during warp
 
         // Speed Modifiers
@@ -1248,13 +1411,15 @@ class SkyApp {
     // --- Draw ---
 
     draw() {
-        if (this.mode === 'GALAXY') this.updatePhysics();
+        if (this.mode === 'GALAXY' || this.mode === 'QUANTUM') this.updatePhysics();
 
         const ctx = this.ctx;
         ctx.clearRect(0, 0, this.width, this.height);
 
         if (this.mode === 'EARTH') {
             this.drawEarthView(ctx);
+        } else if (this.mode === 'QUANTUM') {
+            this.drawQuantumView(ctx);
         } else {
             this.drawGalaxyView(ctx);
         }
@@ -1350,6 +1515,160 @@ class SkyApp {
         }
 
         this.drawConstellationsAndStars(ctx);
+    }
+
+    drawQuantumView(ctx) {
+        this.tick = (this.tick || 0) + 1;
+        this.renderedStars = [];
+
+        const flux = this.quantumFlux / 100; // 0.0 to 1.0
+        const time = this.tick * 0.02;
+
+        // Visual Style: Dark background with neon accents
+        // Background Grid (Quantum Field)
+        ctx.strokeStyle = `rgba(0, 100, 255, ${0.1 * flux})`;
+        ctx.lineWidth = 1;
+        const gridSize = 100;
+        const w = this.width;
+        const h = this.height;
+
+        // Dynamic Matrix-like background rain
+        /*
+        ctx.fillStyle = 'rgba(0, 20, 40, 0.1)';
+        ctx.fillRect(0,0,w,h);
+        */
+
+        const visibleNodes = [];
+
+        // Helper to project and apply quantum jitter
+        const processNode = (obj, baseColor) => {
+             if (!obj.pos3d) return;
+
+             // Quantum Uncertainty (Jitter)
+             // Dependent on Flux and Distance
+             const uncertainty = (1.0 - flux) * 2.0;
+             const seed = obj.pos3d.x * 0.01 + obj.pos3d.y * 0.01;
+
+             // Phase Shift: Object visibility depends on its "phase" vs current flux
+             const phase = Math.sin(seed + time);
+             // If flux is low, we see fewer objects (collapsed states). If flux is high, we see superposition (more).
+             // Actually let's make flux control "chaos".
+
+             // Let's say Flux controls which "Dimension" we see.
+             // Dimension = Flux * 10.
+             // Object Dimension = (seed % 10).
+             // Visibility window.
+
+             const objDim = (Math.abs(Math.sin(seed * 132.1)) * 100);
+             const diff = Math.abs(objDim - this.quantumFlux);
+
+             // Visibility Window width = 20
+             let alpha = 1.0 - (diff / 20);
+             if (alpha < 0) alpha = 0;
+
+             // Always show major stars/planets a bit
+             if (obj.mag < 2 || obj.isPlanet) alpha = Math.max(alpha, 0.3);
+
+             if (alpha <= 0.01) return;
+
+             // Jitter position
+             const jx = Math.sin(time * 5 + seed) * uncertainty * 10;
+             const jy = Math.cos(time * 3 + seed) * uncertainty * 10;
+             const jz = Math.sin(time * 2 + seed) * uncertainty * 10;
+
+             const jPos = new Vector3(obj.pos3d.x + jx, obj.pos3d.y + jy, obj.pos3d.z + jz);
+             const proj = this.project3D(jPos);
+
+             if (proj) {
+                 // Quantum Rendering Style
+                 // Wave Packet
+                 const r = Math.max(2, (500 / proj.dist));
+
+                 ctx.globalAlpha = alpha;
+
+                 // Core
+                 ctx.fillStyle = baseColor;
+                 ctx.beginPath();
+                 ctx.arc(proj.x, proj.y, r, 0, Math.PI*2);
+                 ctx.fill();
+
+                 // Wave rings
+                 ctx.strokeStyle = baseColor;
+                 ctx.lineWidth = 1;
+                 const rings = 3;
+                 for(let i=0; i<rings; i++) {
+                     const waveR = r + (i * 5) + Math.sin(time * 10 + i) * 2;
+                     ctx.globalAlpha = alpha * (0.5 / (i+1));
+                     ctx.beginPath();
+                     ctx.arc(proj.x, proj.y, waveR, 0, Math.PI*2);
+                     ctx.stroke();
+                 }
+
+                 ctx.globalAlpha = 1.0;
+
+                 const node = { ...obj, ...proj, alpha, color: baseColor };
+                 this.renderedStars.push(node);
+                 visibleNodes.push(node);
+             }
+        };
+
+        // Process DSOs
+        this.galaxyDSOs.forEach(dso => processNode({ ...dso, isDSO: true }, '#00ffff'));
+
+        // Process Planets
+        Object.keys(PlanetElements).forEach(pName => {
+             const pCoords = Astronomy.calculatePlanetPos(pName, this.date);
+             if (pCoords) {
+                 const distLy = pCoords.dist * 0.0000158125;
+                 const pPos = Astronomy.sphericalToCartesian(pCoords.ra, pCoords.dec, distLy);
+                 processNode({ name: pName, type: 'Planet', pos3d: pPos, mag: -2, isPlanet: true }, '#ff00ff');
+             }
+        });
+
+        // Sun
+        const sunCoords = Astronomy.calculateSunPos(this.date);
+        const sunPos = Astronomy.sphericalToCartesian(sunCoords.ra, sunCoords.dec, sunCoords.dist);
+        processNode({ name: 'Sol', type: 'Star', pos3d: sunPos, mag: -26, isSun: true }, '#ffff00');
+
+        // Stars
+        for (const [name, data] of stars) {
+             processNode({ name, ...data }, '#00ffaa');
+        }
+
+        // Entanglement Lines (Connect nearby visible nodes)
+        ctx.strokeStyle = 'rgba(0, 255, 170, 0.2)';
+        ctx.lineWidth = 1;
+
+        // Optimization: Don't check all pairs. Just check a subset or use grid?
+        // Since N is small (<100 rendered usually), n^2 is fine.
+        for (let i = 0; i < visibleNodes.length; i++) {
+            for (let j = i + 1; j < visibleNodes.length; j++) {
+                const n1 = visibleNodes[i];
+                const n2 = visibleNodes[j];
+
+                // Screen distance
+                const dx = n1.x - n2.x;
+                const dy = n1.y - n2.y;
+                const d2 = dx*dx + dy*dy;
+
+                if (d2 < 200 * 200) { // Connect if close on screen (visual entanglement)
+                    ctx.globalAlpha = Math.min(n1.alpha, n2.alpha) * (1 - Math.sqrt(d2)/200);
+                    ctx.beginPath();
+                    ctx.moveTo(n1.x, n1.y);
+                    ctx.lineTo(n2.x, n2.y);
+                    ctx.stroke();
+                }
+            }
+        }
+        ctx.globalAlpha = 1.0;
+
+        // Draw HUD overlay text
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'alphabetic';
+        ctx.fillStyle = '#00ffff';
+        ctx.font = '14px monospace';
+        ctx.fillText(`QUANTUM FLUX: ${this.quantumFlux}%`, 20, 50);
+        ctx.fillText(`DIMENSION: ${(this.quantumFlux / 10).toFixed(1)}`, 20, 70);
     }
 
     drawGalaxyView(ctx) {
@@ -1668,7 +1987,7 @@ class SkyApp {
                      
                      // Draw Procedural Orbits if extremely close (even for named stars)
                      if (proj.dist < 0.1) {
-                        this.drawProceduralSystem(ctx, proj.x, proj.y, proj.dist, data.ra);
+                        this.drawProceduralSystem(ctx, proj.x, proj.y, proj.dist, data.ra, name);
                      }
                 }
 
@@ -1682,7 +2001,12 @@ class SkyApp {
         this.drawConstellationsAndStars(ctx);
     }
     
-    drawProceduralSystem(ctx, sx, sy, distToStar, seed) {
+    drawProceduralSystem(ctx, sx, sy, distToStar, seed, starName) {
+         if (starName && ExoplanetData[starName]) {
+             this.drawRealExoplanetSystem(ctx, sx, sy, distToStar, ExoplanetData[starName]);
+             return;
+         }
+
          // Use a consistent seeded random
          const random = (s) => {
              const x = Math.sin(s) * 10000;
@@ -1723,6 +2047,51 @@ class SkyApp {
              ctx.arc(px, py, 4 + (100/distToStar)*0.1, 0, Math.PI*2);
              ctx.fill();
          }
+    }
+
+    drawRealExoplanetSystem(ctx, sx, sy, distToStar, planets) {
+         ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+         ctx.lineWidth = 1;
+
+         planets.forEach((p, i) => {
+             // Map 0.01 AU to some reasonable screen size based on zoom
+             // distToStar is in LY.
+             // We want orbits to look visible when we are close (e.g. 0.0001 LY away).
+             // 1 AU ~ 1.58e-5 LY.
+             // Scale factor needs to make them visible.
+
+             const auToScreen = (this.height / 2) * (0.0002 / distToStar);
+             const orbitRadiusScreen = p.a * auToScreen * 50;
+
+             if (orbitRadiusScreen > this.width * 2) return;
+             if (orbitRadiusScreen < 5) return;
+
+             ctx.beginPath();
+             ctx.ellipse(sx, sy, orbitRadiusScreen, orbitRadiusScreen * 0.4, 0, 0, Math.PI*2);
+             ctx.stroke();
+
+             // Planet Pos
+             const speed = 20 / p.P; // Visual speed
+             const angle = this.tick * speed * 0.1 + i; // Offset start
+
+             const ex = orbitRadiusScreen * Math.cos(angle);
+             const ey = orbitRadiusScreen * 0.4 * Math.sin(angle);
+
+             const px = sx + ex;
+             const py = sy + ey;
+
+             ctx.fillStyle = p.color;
+             ctx.beginPath();
+             ctx.arc(px, py, 3, 0, Math.PI*2);
+             ctx.fill();
+
+             // Label Habitable Ones
+             if (p.color === '#00ff00' || p.color === '#00ffff' || p.color === '#aaffaa') {
+                  ctx.fillStyle = '#00ff00';
+                  ctx.font = '9px Arial';
+                  ctx.fillText(p.name, px + 5, py);
+             }
+         });
     }
 
     drawConstellationsAndStars(ctx) {
@@ -1858,6 +2227,25 @@ class SkyApp {
             }
         }
         return best;
+    }
+
+    handleDoubleClick(e) {
+        if (this.mode !== 'QUANTUM') return;
+        const rect = this.canvas.getBoundingClientRect();
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
+        const hit = this.findHit(mx, my);
+
+        if (hit && hit.pos3d) {
+            // Tunneling Effect
+            this.animateCameraTo(
+                new Vector3(hit.pos3d.x, hit.pos3d.y - 2, hit.pos3d.z), // Teleport close
+                new Vector3(hit.pos3d.x, hit.pos3d.y, hit.pos3d.z)
+            );
+            // Visual flair
+            const hudEl = document.getElementById('galaxy-hud');
+            if (hudEl) hudEl.innerHTML = `<span style="color:#ff00ff; font-weight:bold;">QUANTUM TUNNELING...</span>`;
+        }
     }
 
     showPopup(x, y, obj) {
