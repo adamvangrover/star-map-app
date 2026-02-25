@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Constellation Viewer</title>
     <link rel="stylesheet" href="style.css">
-    <!-- FontAwesome for icons (optional, but good for UI) - using text for now to keep dependencies low -->
 </head>
 <body>
     <div id="app-container">
@@ -22,56 +21,84 @@
                 </div>
             </div>
 
+            <!-- Display Options -->
+            <details open>
+                <summary>Display Options</summary>
+                <div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="chk-constellations" checked>
+                        <label for="chk-constellations">Show Constellations</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="chk-labels" checked>
+                        <label for="chk-labels">Show Labels</label>
+                    </div>
+                </div>
+            </details>
+
             <!-- Earth Controls -->
             <div id="earth-controls">
-                <div class="control-group">
-                    <label for="location-lat">Latitude:</label>
-                    <input type="number" id="location-lat" value="40.7128" step="0.0001">
-                </div>
-                <div class="control-group">
-                    <label for="location-lon">Longitude:</label>
-                    <input type="number" id="location-lon" value="-74.0060" step="0.0001">
-                </div>
-                <button id="btn-use-location">Use My Location</button>
+                <details open>
+                    <summary>Location & Time</summary>
+                    <div>
+                        <div class="control-group">
+                            <label for="location-lat">Latitude:</label>
+                            <input type="number" id="location-lat" value="40.7128" step="0.0001">
+                        </div>
+                        <div class="control-group">
+                            <label for="location-lon">Longitude:</label>
+                            <input type="number" id="location-lon" value="-74.0060" step="0.0001">
+                        </div>
+                        <button id="btn-use-location">Use My Location</button>
 
-                <hr>
+                        <hr>
 
-                <div class="control-group">
-                    <label for="datetime">Date & Time:</label>
-                    <input type="datetime-local" id="datetime">
-                </div>
-                <button id="btn-set-now">Set to Now</button>
+                        <div class="control-group">
+                            <label for="datetime">Date & Time:</label>
+                            <input type="datetime-local" id="datetime">
+                        </div>
+                        <button id="btn-set-now">Set to Now</button>
+                    </div>
+                </details>
             </div>
 
             <!-- Galaxy Controls (Hidden by default) -->
             <div id="galaxy-controls" style="display: none;">
-                <p class="instruction">
-                    <strong>WASD</strong>: Move | <strong>Space/C</strong>: Up/Down<br>
-                    <strong>Shift</strong>: Sprint (10x) | <strong>Ctrl</strong>: Warp (100x)<br>
-                    <strong>Mouse</strong>: Look | <strong>Click</strong>: Travel
-                </p>
-                <div class="control-group">
-                    <label for="fly-speed">Base Speed (ly/s):</label>
-                    <input type="range" id="fly-speed" min="0.1" max="50" step="0.1" value="1">
-                    <span id="speed-val">1.0</span>
-                </div>
-                <button id="btn-reset-view">Return to Earth</button>
+                <details open>
+                    <summary>Navigation</summary>
+                    <div>
+                        <p class="instruction">
+                            <strong>WASD</strong>: Move | <strong>Space/C</strong>: Up/Down<br>
+                            <strong>Shift</strong>: Sprint (10x) | <strong>Ctrl</strong>: Warp (100x)<br>
+                            <strong>Mouse</strong>: Look | <strong>Click</strong>: Travel
+                        </p>
+                        <div class="control-group">
+                            <label for="fly-speed">Base Speed (ly/s):</label>
+                            <input type="range" id="fly-speed" min="0.1" max="50" step="0.1" value="1">
+                            <span id="speed-val">1.0</span>
+                        </div>
+                        <button id="btn-reset-view">Return to Earth</button>
+                    </div>
+                </details>
             </div>
 
             <!-- Quantum Controls (Hidden by default) -->
             <div id="quantum-controls" style="display: none;">
-                <p class="instruction" style="color: #00ffff; border: 1px solid #00aaaa;">
-                    <strong>Quantum State Navigation</strong><br>
-                    <strong>Double Click</strong>: Tunnel (Teleport)<br>
-                    <strong>Shift+Scroll</strong>: Shift Dimension
-                </p>
-                <div class="control-group">
-                    <label for="flux-val">Probability Flux:</label>
-                    <input type="range" id="flux-val" min="0" max="100" step="1" value="50">
-                </div>
+                <details open>
+                    <summary>Quantum State</summary>
+                    <div>
+                        <p class="instruction" style="color: #00ffff; border: 1px solid #00aaaa;">
+                            <strong>Quantum State Navigation</strong><br>
+                            <strong>Double Click</strong>: Tunnel (Teleport)<br>
+                            <strong>Shift+Scroll</strong>: Shift Dimension
+                        </p>
+                        <div class="control-group">
+                            <label for="flux-val">Probability Flux:</label>
+                            <input type="range" id="flux-val" min="0" max="100" step="1" value="50">
+                        </div>
+                    </div>
+                </details>
             </div>
-
-            <hr>
 
             <div id="tours-panel" style="margin-bottom: 20px;">
                 <label>Guided Tours:</label>
@@ -82,7 +109,7 @@
             </div>
 
             <div class="control-group" style="position: relative;">
-                <input type="text" id="search-input" placeholder="Search stars & constellations...">
+                <input type="text" id="search-input" placeholder="Search stars & constellations..." autocomplete="off">
                 <div id="search-results"></div>
             </div>
 
@@ -98,6 +125,9 @@
         </div>
 
         <div id="star-map">
+            <!-- Toggle Button -->
+            <button id="btn-toggle-panel" title="Toggle Controls">☰</button>
+
             <!-- Canvas will be injected here -->
             <div id="map-overlays">
                 <div id="loading-indicator" style="display:none;">Calculating...</div>
