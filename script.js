@@ -129,6 +129,19 @@ addStar('Meissa', 5.58, 9.9, 3.39, { constellation: 'Orion', dist: '1100 ly' });
 // Cassiopeia: Ruchbah
 addStar('Ruchbah', 1.43, 60.2, 2.66, { constellation: 'Cassiopeia', dist: '99 ly' });
 
+// Cygnus Stars
+addStar('Albireo', 19.51, 27.96, 3.0, { constellation: 'Cygnus', dist: '430 ly', meaning: 'The Hen\'s Beak', type: 'K3 (Double)' });
+addStar('Gienah', 20.77, 33.97, 2.48, { constellation: 'Cygnus', dist: '72 ly', meaning: 'Wing', type: 'K0 (Giant)' });
+addStar('Delta Cygni', 19.75, 45.13, 2.87, { constellation: 'Cygnus', dist: '165 ly', meaning: 'Rukh', type: 'B9 (Subgiant)' });
+
+// Lyra Stars
+addStar('Sheliak', 18.83, 33.36, 3.52, { constellation: 'Lyra', dist: '960 ly', meaning: 'Harp', type: 'B7 (Variable)' });
+addStar('Sulafat', 18.98, 32.68, 3.25, { constellation: 'Lyra', dist: '620 ly', meaning: 'Turtle', type: 'B9 (Giant)' });
+
+// Aquila Stars
+addStar('Tarazed', 19.77, 10.61, 2.72, { constellation: 'Aquila', dist: '460 ly', meaning: 'Scale Beam', type: 'K3 (Bright Giant)' });
+addStar('Alshain', 19.92, 6.40, 3.71, { constellation: 'Aquila', dist: '45 ly', meaning: 'The Balance', type: 'G8 (Subgiant)' });
+
 // New Stars (Exoplanet Hosts & Neighbors)
 addStar('TRAPPIST-1', 23.1, -5.04, 18.8, { dist: '39 ly', type: 'M8 (Red Dwarf)', meaning: 'TRAPPIST Telescope', exoplanets: '7 planets (b,c,d,e,f,g,h)' });
 addStar('Kepler-186', 19.9, 43.9, 12.5, { dist: '580 ly', type: 'M1 (Red Dwarf)', meaning: 'Kepler Mission', exoplanets: 'Kepler-186f (Habitable Zone)' });
@@ -163,7 +176,11 @@ const DSOs = [
     { name: 'Cigar Galaxy (M82)', ra: 9.93, dec: 69.68, mag: 8.4, dist: '12,000,000 ly', type: 'Starburst Galaxy', desc: 'Undergoing high rates of star formation.' },
     { name: 'Sunflower Galaxy (M63)', ra: 13.26, dec: 42.02, mag: 9.3, dist: '29,000,000 ly', type: 'Spiral Galaxy', desc: 'Part of the M51 Group.' },
     { name: 'Ring Nebula (M57)', ra: 18.89, dec: 33.03, mag: 8.8, dist: '2,000 ly', type: 'Planetary Nebula', desc: 'A famous ring-shaped nebula in Lyra.' },
-    { name: 'Helix Nebula', ra: 22.49, dec: -20.83, mag: 7.6, dist: '650 ly', type: 'Planetary Nebula', desc: 'One of the closest planetary nebulae to Earth.' }
+    { name: 'Helix Nebula', ra: 22.49, dec: -20.83, mag: 7.6, dist: '650 ly', type: 'Planetary Nebula', desc: 'One of the closest planetary nebulae to Earth.' },
+    { name: 'Omega Centauri', ra: 13.44, dec: -47.48, mag: 3.9, dist: '15,800 ly', type: 'Globular Cluster', desc: 'The largest globular cluster in the Milky Way.' },
+    { name: 'Eta Carinae', ra: 10.75, dec: -59.68, mag: -0.8, dist: '7,500 ly', type: 'Stellar System', desc: 'A volatile system contained within the Homunculus Nebula.' },
+    { name: 'Veil Nebula', ra: 20.76, dec: 30.70, mag: 7.0, dist: '2,400 ly', type: 'Supernova Remnant', desc: 'A cloud of heated and ionized gas and dust in Cygnus.' },
+    { name: 'North America Nebula', ra: 20.98, dec: 44.33, mag: 4.0, dist: '2,200 ly', type: 'Emission Nebula', desc: 'Nebula in Cygnus near Deneb.' }
 ];
 
 // Solar System Data (Elements for J2000)
@@ -350,6 +367,36 @@ const constellations = [
             { from: 'Scheat', to: 'Alpheratz' },
             { from: 'Alpheratz', to: 'Markab' },
             { from: 'Markab', to: 'Enif' } // Nose
+        ]
+    },
+    {
+        name: 'Cygnus',
+        stars: ['Deneb', 'Sadr', 'Albireo', 'Gienah', 'Delta Cygni'],
+        mythology: 'The Swan. Often called the Northern Cross.',
+        lines: [
+            { from: 'Deneb', to: 'Sadr' },
+            { from: 'Sadr', to: 'Albireo' }, // Body
+            { from: 'Gienah', to: 'Sadr' }, // Wing
+            { from: 'Delta Cygni', to: 'Sadr' } // Wing
+        ]
+    },
+    {
+        name: 'Lyra',
+        stars: ['Vega', 'Sheliak', 'Sulafat'],
+        mythology: 'The Harp. Represents the lyre of Orpheus.',
+        lines: [
+            { from: 'Vega', to: 'Sheliak' },
+            { from: 'Sheliak', to: 'Sulafat' },
+            { from: 'Sulafat', to: 'Vega' } // Triangle/Parallelogram approx
+        ]
+    },
+    {
+        name: 'Aquila',
+        stars: ['Altair', 'Tarazed', 'Alshain'],
+        mythology: 'The Eagle. It carried Zeus\'s thunderbolts.',
+        lines: [
+            { from: 'Tarazed', to: 'Altair' },
+            { from: 'Altair', to: 'Alshain' } // The shaft of the eagle
         ]
     }
 ];
@@ -574,6 +621,8 @@ class SkyApp {
         this.lastYaw = 0;
         this.keys = {};
         this.isAnimating = false; // Flag to disable physics during animation
+        this.showConstellations = true;
+        this.showLabels = true;
 
         this.renderedStars = [];
         this.backgroundStars = [];
@@ -745,6 +794,24 @@ class SkyApp {
         const speedVal = document.getElementById('speed-val');
         const resetView = document.getElementById('btn-reset-view');
         const travelBtn = document.getElementById('btn-travel-to');
+
+        // Toggle Controls
+        const toggleBtn = document.getElementById('btn-toggle-panel');
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', () => {
+                document.getElementById('controls-panel').classList.toggle('hidden');
+            });
+        }
+
+        const chkConstellations = document.getElementById('chk-constellations');
+        if (chkConstellations) {
+            chkConstellations.addEventListener('change', (e) => this.showConstellations = e.target.checked);
+        }
+
+        const chkLabels = document.getElementById('chk-labels');
+        if (chkLabels) {
+            chkLabels.addEventListener('change', (e) => this.showLabels = e.target.checked);
+        }
 
         // Quantum Controls
         const fluxVal = document.getElementById('flux-val');
@@ -1468,12 +1535,16 @@ class SkyApp {
         };
 
         // Draw Background stars
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
         this.backgroundStars.forEach(bg => {
              const pos = Astronomy.equatorialToHorizontal(bg.ra, bg.dec, this.latitude, lst);
              if (pos.alt >= 0) {
                  const xy = project(pos.alt, pos.az);
-                 if (xy) ctx.fillRect(xy.x, xy.y, 1, 1);
+                 if (xy) {
+                     // Twinkle effect
+                     const twinkle = 0.5 + 0.5 * Math.sin(this.tick * 0.1 + bg.ra);
+                     ctx.fillStyle = `rgba(255, 255, 255, ${0.3 * twinkle})`;
+                     ctx.fillRect(xy.x, xy.y, 1, 1);
+                 }
              }
         });
 
@@ -1797,7 +1868,7 @@ class SkyApp {
                 const distFromCenter = Math.sqrt(vx*vx + vy*vy);
                 
                 // Scale streak by distance from center (perspective warp)
-                const streakLen = Math.min(distFromCenter * warpIntensity, 200);
+                const streakLen = Math.min(distFromCenter * warpIntensity * 3.0, 1000);
 
                 if (streakLen > 2) {
                     ctx.beginPath();
@@ -1805,8 +1876,15 @@ class SkyApp {
                     const tailX = proj.x - (vx / distFromCenter) * streakLen;
                     const tailY = proj.y - (vy / distFromCenter) * streakLen;
                     ctx.lineTo(tailX, tailY);
-                    ctx.lineWidth = Math.max(1, size);
-                    ctx.strokeStyle = bg.color;
+                    ctx.lineWidth = Math.max(1, size) + (warpIntensity * 1.5);
+
+                    // Doppler Shift color effect
+                    if (warpIntensity > 0.5) {
+                        ctx.strokeStyle = '#aaddff';
+                    } else {
+                        ctx.strokeStyle = bg.color;
+                    }
+
                     ctx.stroke();
                 } else {
                      ctx.fillRect(proj.x, proj.y, Math.max(1, size), Math.max(1, size));
@@ -2096,29 +2174,31 @@ class SkyApp {
 
     drawConstellationsAndStars(ctx) {
         // Draw Lines
-        ctx.strokeStyle = '#444466';
-        ctx.lineWidth = 1;
-        constellations.forEach(constellation => {
-            constellation.lines.forEach(line => {
-                const s1 = this.renderedStars.find(s => s.name === line.from);
-                const s2 = this.renderedStars.find(s => s.name === line.to);
+        if (this.showConstellations) {
+            ctx.strokeStyle = '#444466';
+            ctx.lineWidth = 1;
+            constellations.forEach(constellation => {
+                constellation.lines.forEach(line => {
+                    const s1 = this.renderedStars.find(s => s.name === line.from);
+                    const s2 = this.renderedStars.find(s => s.name === line.to);
 
-                if (s1 && s2) {
-                    ctx.beginPath();
-                    ctx.moveTo(s1.x, s1.y);
-                    ctx.lineTo(s2.x, s2.y);
-                    
-                    if (constellation.highlighted) {
-                        ctx.strokeStyle = '#ffd700';
-                        ctx.lineWidth = 2;
-                    } else {
-                        ctx.strokeStyle = '#444466';
-                        ctx.lineWidth = 1;
+                    if (s1 && s2) {
+                        ctx.beginPath();
+                        ctx.moveTo(s1.x, s1.y);
+                        ctx.lineTo(s2.x, s2.y);
+
+                        if (constellation.highlighted) {
+                            ctx.strokeStyle = '#ffd700';
+                            ctx.lineWidth = 2;
+                        } else {
+                            ctx.strokeStyle = '#444466';
+                            ctx.lineWidth = 1;
+                        }
+                        ctx.stroke();
                     }
-                    ctx.stroke();
-                }
+                });
             });
-        });
+        }
 
         // Draw Objects (Overlay Layer for Named/Significant Objects)
         this.renderedStars.forEach(obj => {
@@ -2197,10 +2277,13 @@ class SkyApp {
 
             ctx.shadowBlur = 0;
 
-            if (obj.highlighted || (obj.mag < 1.5 && !obj.isPlanet && !obj.isProcedural)) {
-                ctx.fillStyle = '#aaaaaa';
-                ctx.font = '10px Arial';
-                ctx.fillText(obj.name, obj.x + 5, obj.y + 5);
+            // Labels
+            if (this.showLabels || obj.highlighted) {
+                if (obj.highlighted || (obj.mag < 1.5 && !obj.isPlanet && !obj.isProcedural)) {
+                    ctx.fillStyle = '#aaaaaa';
+                    ctx.font = '10px Arial';
+                    ctx.fillText(obj.name, obj.x + 5, obj.y + 5);
+                }
             }
         });
     }
