@@ -142,6 +142,26 @@ addStar('Sulafat', 18.98, 32.68, 3.25, { constellation: 'Lyra', dist: '620 ly', 
 addStar('Tarazed', 19.77, 10.61, 2.72, { constellation: 'Aquila', dist: '460 ly', meaning: 'Scale Beam', type: 'K3 (Bright Giant)' });
 addStar('Alshain', 19.92, 6.40, 3.71, { constellation: 'Aquila', dist: '45 ly', meaning: 'The Balance', type: 'G8 (Subgiant)' });
 
+// Taurus Stars
+addStar('Alcyone', 3.78, 24.1, 2.87, { constellation: 'Taurus', dist: '440 ly', meaning: 'The Central One', type: 'B7 (Giant)' });
+addStar('Tianguan', 5.63, 21.1, 3.0, { constellation: 'Taurus', dist: '417 ly', meaning: 'Celestial Gate', type: 'B2 (Subgiant)' });
+
+// Boötes Stars
+addStar('Izar', 14.75, 27.07, 2.35, { constellation: 'Boötes', dist: '203 ly', meaning: 'Veil', type: 'K0 (Giant)' });
+addStar('Muphrid', 13.91, 18.39, 2.68, { constellation: 'Boötes', dist: '37 ly', meaning: 'Solitary One', type: 'G0 (Subgiant)' });
+addStar('Seginus', 14.55, 38.3, 3.0, { constellation: 'Boötes', dist: '85 ly', meaning: 'Shoulder', type: 'A7 (Giant)' });
+
+// Virgo Stars
+addStar('Vindemiatrix', 13.03, 10.96, 2.8, { constellation: 'Virgo', dist: '102 ly', meaning: 'Grape Gatherer', type: 'G8 (Giant)' });
+addStar('Porrima', 12.69, -1.45, 2.74, { constellation: 'Virgo', dist: '38 ly', meaning: 'Goddess of Prophecy', type: 'F0 (Main Sequence)' });
+addStar('Auva', 12.93, 3.4, 3.38, { constellation: 'Virgo', dist: '202 ly', meaning: 'Barker', type: 'M3 (Giant)' });
+
+// Sagittarius Stars
+addStar('Kaus Media', 18.46, -29.8, 2.7, { constellation: 'Sagittarius', dist: '306 ly', meaning: 'Middle Bow', type: 'K3 (Giant)' });
+addStar('Kaus Borealis', 18.47, -25.4, 2.8, { constellation: 'Sagittarius', dist: '77 ly', meaning: 'Northern Bow', type: 'K0 (Giant)' });
+addStar('Alnasl', 18.09, -30.4, 2.98, { constellation: 'Sagittarius', dist: '96 ly', meaning: 'Arrowhead', type: 'K0 (Giant)' });
+addStar('Ascella', 19.04, -29.9, 2.6, { constellation: 'Sagittarius', dist: '89 ly', meaning: 'Armpit', type: 'A2 (Main Sequence)' });
+
 // New Stars (Exoplanet Hosts & Neighbors)
 addStar('TRAPPIST-1', 23.1, -5.04, 18.8, { dist: '39 ly', type: 'M8 (Red Dwarf)', meaning: 'TRAPPIST Telescope', exoplanets: '7 planets (b,c,d,e,f,g,h)' });
 addStar('Kepler-186', 19.9, 43.9, 12.5, { dist: '580 ly', type: 'M1 (Red Dwarf)', meaning: 'Kepler Mission', exoplanets: 'Kepler-186f (Habitable Zone)' });
@@ -181,6 +201,16 @@ const DSOs = [
     { name: 'Eta Carinae', ra: 10.75, dec: -59.68, mag: -0.8, dist: '7,500 ly', type: 'Stellar System', desc: 'A volatile system contained within the Homunculus Nebula.' },
     { name: 'Veil Nebula', ra: 20.76, dec: 30.70, mag: 7.0, dist: '2,400 ly', type: 'Supernova Remnant', desc: 'A cloud of heated and ionized gas and dust in Cygnus.' },
     { name: 'North America Nebula', ra: 20.98, dec: 44.33, mag: 4.0, dist: '2,200 ly', type: 'Emission Nebula', desc: 'Nebula in Cygnus near Deneb.' }
+];
+
+// Meteor Showers Data
+const MeteorShowers = [
+    { name: 'Perseids', peakMonth: 7, peakDay: 12, ra: 46, dec: 58, zhr: 100 }, // Month is 0-indexed (Aug = 7)
+    { name: 'Geminids', peakMonth: 11, peakDay: 14, ra: 112, dec: 33, zhr: 120 },
+    { name: 'Leonids', peakMonth: 10, peakDay: 17, ra: 152, dec: 22, zhr: 15 },
+    { name: 'Orionids', peakMonth: 9, peakDay: 21, ra: 95, dec: 16, zhr: 20 },
+    { name: 'Lyrids', peakMonth: 3, peakDay: 22, ra: 271, dec: 34, zhr: 18 },
+    { name: 'Eta Aquariids', peakMonth: 4, peakDay: 6, ra: 338, dec: -1, zhr: 50 }
 ];
 
 // Solar System Data (Elements for J2000)
@@ -398,6 +428,50 @@ const constellations = [
             { from: 'Tarazed', to: 'Altair' },
             { from: 'Altair', to: 'Alshain' } // The shaft of the eagle
         ]
+    },
+    {
+        name: 'Taurus',
+        stars: ['Aldebaran', 'Elnath', 'Alcyone', 'Tianguan'],
+        mythology: 'The Bull. Features the bright star Aldebaran and the Pleiades.',
+        lines: [
+            { from: 'Aldebaran', to: 'Tianguan' },
+            { from: 'Tianguan', to: 'Elnath' },
+            { from: 'Aldebaran', to: 'Alcyone' } // V-shape head
+        ]
+    },
+    {
+        name: 'Boötes',
+        stars: ['Arcturus', 'Izar', 'Muphrid', 'Seginus'],
+        mythology: 'The Herdsman. Arcturus is the fourth brightest star in the sky.',
+        lines: [
+            { from: 'Arcturus', to: 'Muphrid' },
+            { from: 'Arcturus', to: 'Izar' },
+            { from: 'Izar', to: 'Seginus' }
+        ]
+    },
+    {
+        name: 'Virgo',
+        stars: ['Spica', 'Vindemiatrix', 'Porrima', 'Auva'],
+        mythology: 'The Virgin. Associated with Demeter and the harvest.',
+        lines: [
+            { from: 'Spica', to: 'Porrima' },
+            { from: 'Porrima', to: 'Auva' },
+            { from: 'Auva', to: 'Vindemiatrix' },
+            { from: 'Vindemiatrix', to: 'Porrima' } // Diamond shape
+        ]
+    },
+    {
+        name: 'Sagittarius',
+        stars: ['Kaus Australis', 'Nunki', 'Kaus Media', 'Kaus Borealis', 'Alnasl', 'Ascella'],
+        mythology: 'The Archer. Famous for the "Teapot" asterism.',
+        lines: [
+            { from: 'Kaus Australis', to: 'Kaus Media' },
+            { from: 'Kaus Media', to: 'Kaus Borealis' }, // Lid
+            { from: 'Kaus Media', to: 'Alnasl' }, // Spout
+            { from: 'Kaus Australis', to: 'Ascella' },
+            { from: 'Ascella', to: 'Nunki' }, // Handle
+            { from: 'Nunki', to: 'Kaus Borealis' }
+        ]
     }
 ];
 
@@ -605,6 +679,7 @@ class SkyApp {
         this.longitude = -74.0060;
         this.date = new Date();
         this.scale = 1.0;
+        this.isPlaying = false;
 
         // Galaxy Mode State
         this.camera = {
@@ -633,6 +708,15 @@ class SkyApp {
         this.setupControls();
         this.resize();
         this.startLoop();
+
+        // Hide Loading Overlay
+        const loader = document.getElementById('loading-overlay');
+        if (loader) {
+            setTimeout(() => {
+                loader.style.opacity = 0;
+                setTimeout(() => loader.style.display = 'none', 500);
+            }, 500);
+        }
     }
 
     initUI() {
@@ -904,6 +988,12 @@ class SkyApp {
             this.updateInputs();
         });
 
+        const playPauseBtn = document.getElementById('btn-play-pause');
+        playPauseBtn.addEventListener('click', () => {
+            this.isPlaying = !this.isPlaying;
+            playPauseBtn.textContent = this.isPlaying ? 'Pause' : 'Play';
+        });
+
         useLocBtn.addEventListener('click', () => {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition((pos) => {
@@ -1066,8 +1156,8 @@ class SkyApp {
             if (!startTime) startTime = timestamp;
             const progress = Math.min((timestamp - startTime) / duration, 1);
 
-            // Ease in out cubic
-            const ease = progress < 0.5 ? 4 * progress * progress * progress : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+            // Ease Out Quart for smoother arrival
+            const ease = 1 - Math.pow(1 - progress, 4);
 
             this.camera.pos = new Vector3(
                 startPos.x + (targetPos.x - startPos.x) * ease,
@@ -1478,6 +1568,12 @@ class SkyApp {
     // --- Draw ---
 
     draw() {
+        if (this.isPlaying) {
+            // Advance time by 10 minutes per frame
+            this.date = new Date(this.date.getTime() + 10 * 60 * 1000);
+            this.updateInputs();
+        }
+
         if (this.mode === 'GALAXY' || this.mode === 'QUANTUM') this.updatePhysics();
 
         const ctx = this.ctx;
@@ -1508,6 +1604,13 @@ class SkyApp {
         ctx.lineWidth = 2;
         ctx.stroke();
         ctx.fillStyle = '#0b0b15';
+        ctx.fill();
+
+        // Atmosphere Glow (Light Pollution / Sunset hint)
+        const atmGrad = ctx.createRadialGradient(cx, cy, horizonRadius * 0.8, cx, cy, horizonRadius);
+        atmGrad.addColorStop(0, 'rgba(10, 20, 40, 0)');
+        atmGrad.addColorStop(1, 'rgba(20, 30, 60, 0.4)');
+        ctx.fillStyle = atmGrad;
         ctx.fill();
 
         // Markers
@@ -1584,6 +1687,51 @@ class SkyApp {
                 }
             }
         }
+
+        // Meteor Showers
+        const currentMonth = this.date.getMonth();
+        const currentDay = this.date.getDate();
+
+        MeteorShowers.forEach(shower => {
+            // Check if within 5 days of peak
+            if (Math.abs(currentMonth - shower.peakMonth) === 0 && Math.abs(currentDay - shower.peakDay) <= 5) {
+                // Calculate radiant position
+                const pos = Astronomy.equatorialToHorizontal(shower.ra, shower.dec, this.latitude, lst);
+
+                if (pos.alt > 0) {
+                    // Radiant is above horizon
+                    const radiant = project(pos.alt, pos.az);
+
+                    if (radiant) {
+                        // Draw sporadic meteors
+                        // Chance based on ZHR and proximity to peak
+                        const daysFromPeak = Math.abs(currentDay - shower.peakDay);
+                        const intensity = (1 - daysFromPeak/6) * (shower.zhr / 500); // Scaling factor
+
+                        if (Math.random() < intensity) {
+                            // Generate random start point near radiant
+                            const angle = Math.random() * Math.PI * 2;
+                            const dist = 50 + Math.random() * 200; // Distance from radiant to start
+                            const len = 20 + Math.random() * 50; // Length of streak
+
+                            const sx = radiant.x + Math.cos(angle) * dist;
+                            const sy = radiant.y + Math.sin(angle) * dist;
+
+                            // Direction away from radiant
+                            const ex = sx + (sx - radiant.x) / dist * len;
+                            const ey = sy + (sy - radiant.y) / dist * len;
+
+                            ctx.beginPath();
+                            ctx.moveTo(sx, sy);
+                            ctx.lineTo(ex, ey);
+                            ctx.strokeStyle = 'rgba(255, 255, 200, ' + (0.5 + Math.random()*0.5) + ')';
+                            ctx.lineWidth = 1 + Math.random();
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+        });
 
         this.drawConstellationsAndStars(ctx);
     }
